@@ -1,0 +1,107 @@
+package cn.edu.bjut.librarymanagementsystem.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import java.sql.Timestamp;
+
+@Data
+@Entity
+@Table(name = "seat_reservations")
+public class SeatReservation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "reservation_id")
+    private Long reservationId;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private Users user;
+
+    @ManyToOne
+    @JoinColumn(name = "seat_id", nullable = false)
+    private Seat seat;
+
+    public void setReservationId(Long reservationId) {
+        this.reservationId = reservationId;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
+    }
+
+    public void setSeat(Seat seat) {
+        this.seat = seat;
+    }
+
+    public void setEndTime(Timestamp endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setStatus(ReservationStatus status) {
+        this.status = status;
+    }
+
+    public void setCheckinTime(Timestamp checkinTime) {
+        this.checkinTime = checkinTime;
+    }
+
+    public void setCheckoutTime(Timestamp checkoutTime) {
+        this.checkoutTime = checkoutTime;
+    }
+
+    public Long getReservationId() {
+        return reservationId;
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public Seat getSeat() {
+        return seat;
+    }
+
+    public Timestamp getStartTime() {
+        return startTime;
+    }
+
+    public Timestamp getEndTime() {
+        return endTime;
+    }
+
+    public ReservationStatus getStatus() {
+        return status;
+    }
+
+    public Timestamp getCheckinTime() {
+        return checkinTime;
+    }
+
+    public Timestamp getCheckoutTime() {
+        return checkoutTime;
+    }
+
+    @Column(name = "start_time", nullable = false)
+    private Timestamp startTime;
+
+    @Column(name = "end_time", nullable = false)
+    private Timestamp endTime;
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "ENUM('待签到','已签到','已取消','已完成','爽约') DEFAULT '待签到'")
+    private ReservationStatus status;
+
+    @Column(name = "checkin_time")
+    private Timestamp checkinTime;
+
+    @Column(name = "checkout_time")
+    private Timestamp checkoutTime;
+
+    public enum ReservationStatus {
+        待签到, 已签到, 已取消, 已完成, 爽约
+    }
+}
