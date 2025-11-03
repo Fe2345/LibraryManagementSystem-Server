@@ -4,15 +4,14 @@ import cn.edu.bjut.librarymanagementsystem.entity.Borrow;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BorrowRepository extends JpaRepository<Borrow, Long> {
-    /*
-    // 根据用户ID查找借阅记录
-    List<Borrow> findByUserId(Long userId);
 
+    List<Borrow> findByUserId(Integer userId);
+    /*
     // 根据书籍ID查找借阅记录
     List<Borrow> findByBookId(Long bookId);
 

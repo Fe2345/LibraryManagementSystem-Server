@@ -6,12 +6,13 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @org.springframework.context.annotation.Configuration
 public class SecurityConfig {
+    //放行API接口
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                .requestMatchers("/api/auth/*","/api/borrows/user/*","/api/books/*").permitAll()
                 .anyRequest().authenticated()
             );
         return http.build();

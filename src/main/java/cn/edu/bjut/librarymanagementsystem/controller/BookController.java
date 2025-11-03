@@ -1,6 +1,8 @@
 package cn.edu.bjut.librarymanagementsystem.controller;
 
 import cn.edu.bjut.librarymanagementsystem.dto.ApiResponse;
+import cn.edu.bjut.librarymanagementsystem.dto.BookQueryByIdRequest;
+import cn.edu.bjut.librarymanagementsystem.dto.BookQueryByTitleRequest;
 import cn.edu.bjut.librarymanagementsystem.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,23 +19,18 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    // 获取所有书籍
-    @GetMapping
-    public List<Book> getAllBooks() {
-        return bookService.getAllBooks();
-    }
-
     // 根据书名查找书籍
-    @GetMapping("/search")
-    public List<Book> getBooksByTitle(@RequestParam String title) {
-        return bookService.getBooksByTitle(title);
+    @PostMapping("/search")
+    public ResponseEntity<ApiResponse> searchBooksByTitle(@RequestBody BookQueryByTitleRequest req) {
+        List<Book> books = bookService.getBooksByTitle(req.title());
+        return ResponseEntity.ok(new ApiResponse(true, "SEARCH_SUCCESS", books));
     }
 
-    @GetMapping("/rangeSearch")
-    public ResponseEntity<ApiResponse> getBooksByIdRange(@RequestParam Integer startId, @RequestParam Integer endId) {
+    @PostMapping("/rangeSearch")
+    public ResponseEntity<ApiResponse> getBooksByIdRange(@RequestBody BookQueryByIdRequest req) {
         // 用id获取书籍并组合成列表
         List<Book> books = new ArrayList<Book>();
-        for (int id = startId; id <= endId; id++) {
+        for (int id = req.startId(); id <= req.endId(); id++) {
             Book book = bookService.getBookById(id);
             if (book != null) {
                 books.add(book);

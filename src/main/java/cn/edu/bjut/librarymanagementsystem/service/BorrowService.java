@@ -11,13 +11,16 @@ import java.util.Optional;
 
 @Service
 public class BorrowService {
-    /*
     private final BorrowRepository borrowRepository;
 
     @Autowired
     public BorrowService(BorrowRepository borrowRepository) {
         this.borrowRepository = borrowRepository;
     }
+    public List<Borrow> getBorrowById(Integer id) {
+        return borrowRepository.findByUserId(id);
+    }
+    /*
 
     // 获取所有借阅记录
     public List<Borrow> getAllBorrows() {
@@ -25,14 +28,8 @@ public class BorrowService {
     }
 
     // 根据ID查找借阅记录
-    public Optional<Borrow> getBorrowById(Long id) {
-        return borrowRepository.findById(id);
-    }
 
-    // 根据用户ID查找借阅记录
-    public List<Borrow> getBorrowsByUserId(Long userId) {
-        return borrowRepository.findByUserId(userId);
-    }
+
 
     // 根据书籍ID查找借阅记录
     public List<Borrow> getBorrowsByBookId(Long bookId) {
