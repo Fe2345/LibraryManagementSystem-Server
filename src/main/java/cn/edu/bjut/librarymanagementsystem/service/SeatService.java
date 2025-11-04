@@ -4,14 +4,14 @@ import cn.edu.bjut.librarymanagementsystem.entity.Seat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.edu.bjut.librarymanagementsystem.repository.SeatRepository;
-
+import cn.edu.bjut.librarymanagementsystem.entity.Seat.SeatStatus;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class SeatService {
-    /*
+
     private final SeatRepository seatRepository;
 
     @Autowired
@@ -19,10 +19,41 @@ public class SeatService {
         this.seatRepository = seatRepository;
     }
 
-    // 获取所有座位
     public List<Seat> getAllSeats() {
         return seatRepository.findAll();
     }
+
+    public boolean updateSeatStatus(Integer seatId) {
+        Optional<Seat> seatOptional = seatRepository.findBySeatId(seatId);
+        if (seatOptional.isPresent()) {
+            Seat seat = seatOptional.get();
+            // 切换座位状态
+            if (SeatStatus.可用.equals(seat.getStatus())) {
+                seat.setStatus(SeatStatus.被占用);
+            } else {
+                seat.setStatus(SeatStatus.可用);
+            }
+            seatRepository.save(seat);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean setSeatReserved(Integer seatId) {
+        Optional<Seat> seatOptional = seatRepository.findBySeatId(seatId);
+        if (seatOptional.isPresent()) {
+            Seat seat = seatOptional.get();
+            // 设置座位状态为已预约
+            if (seat.getStatus().equals(SeatStatus.可用)) seat.setStatus(SeatStatus.维护);
+            if (seat.getStatus().equals(SeatStatus.维护)) seat.setStatus(SeatStatus.可用);
+            seatRepository.save(seat);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    /*
 
     // 根据ID查找座位
     public Optional<Seat> getSeatById(Long id) {

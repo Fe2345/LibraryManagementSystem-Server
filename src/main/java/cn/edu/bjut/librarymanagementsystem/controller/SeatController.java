@@ -1,5 +1,6 @@
 package cn.edu.bjut.librarymanagementsystem.controller;
 
+import cn.edu.bjut.librarymanagementsystem.dto.ApiResponse;
 import cn.edu.bjut.librarymanagementsystem.entity.Seat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/seats")
 public class SeatController {
-    /*
+
     private final SeatService seatService;
 
     @Autowired
@@ -23,12 +24,34 @@ public class SeatController {
     }
 
     // 获取所有座位
-    @GetMapping
-    public ResponseEntity<List<Seat>> getAllSeats() {
+    @GetMapping("/getAll")
+    public ResponseEntity<ApiResponse> getAllSeats() {
         List<Seat> seats = seatService.getAllSeats();
-        return new ResponseEntity<>(seats, HttpStatus.OK);
+        return ResponseEntity.ok(new ApiResponse(true,"GET_ALL_SEATS_SUCCESS", seats));
     }
 
+    @PutMapping("/updateStatus/{seatId}")
+    public ResponseEntity<ApiResponse> updateStatus(@PathVariable Integer seatId) {
+        boolean updated = seatService.updateSeatStatus(seatId);
+        if (updated) {
+            return ResponseEntity.ok(new ApiResponse(true, "SEAT_STATUS_UPDATED", null));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(false, "SEAT_NOT_FOUND", null));
+        }
+    }
+
+    @PutMapping("/toggleMaintain/{seatId}")
+    public ResponseEntity<ApiResponse> setSeatReserved(@PathVariable Integer seatId) {
+        boolean updated = seatService.setSeatReserved(seatId);
+        if (updated) {
+            return ResponseEntity.ok(new ApiResponse(true, "SEAT_STATUS_UPDATED", null));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(false, "SEAT_NOT_FOUND", null));
+        }
+    }
+    /*
     // 根据ID获取座位
     @GetMapping("/{id}")
     public ResponseEntity<Seat> getSeatById(@PathVariable Long id) {

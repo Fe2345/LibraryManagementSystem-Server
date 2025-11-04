@@ -3,6 +3,7 @@ package cn.edu.bjut.librarymanagementsystem.controller;
 import cn.edu.bjut.librarymanagementsystem.dto.ApiResponse;
 import cn.edu.bjut.librarymanagementsystem.dto.BookQueryByIdRequest;
 import cn.edu.bjut.librarymanagementsystem.dto.BookQueryByTitleRequest;
+import cn.edu.bjut.librarymanagementsystem.dto.BookQueryRequest;
 import cn.edu.bjut.librarymanagementsystem.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,11 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
+    @GetMapping("getAll")
+    public ResponseEntity<List<Book>> getAllBooks(){
+        List<Book> books = bookService.getAllBooks();
+        return ResponseEntity.ok(books);
+    }
     // 根据书名查找书籍
     @PostMapping("/search")
     public ResponseEntity<ApiResponse> searchBooksByTitle(@RequestBody BookQueryByTitleRequest req) {
@@ -37,6 +43,13 @@ public class BookController {
             }
         }
         return ResponseEntity.ok(new ApiResponse(true, "RANGE_SEARCH_SUCCESS", books));
+    }
+
+    @PostMapping("ComplexSearch")
+    public ResponseEntity<ApiResponse> complexSearch(@RequestBody BookQueryRequest req)
+    {
+        List<Book> books = bookService.ComplexSearch(req);
+        return ResponseEntity.ok(new ApiResponse(true, "COMPLEX_SEARCH_SUCCESS", books));
     }
     // 根据书籍 ID 查找书籍
     @GetMapping("/{id}")

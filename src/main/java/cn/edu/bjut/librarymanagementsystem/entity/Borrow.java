@@ -16,6 +16,9 @@ public class Borrow {
     @JoinColumn(name = "user_id", nullable = false)
     private Integer userId;
 
+    @JoinColumn(name = "title",nullable = false)
+    private String title;
+
     @ManyToOne
     @JoinColumn(name = "barcode", nullable = false)
     private BookLocation bookLocation;
@@ -72,6 +75,10 @@ public class Borrow {
         this.lastRenewTime = lastRenewTime;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public Integer getBorrowId() {
         return borrowId;
     }
@@ -90,6 +97,10 @@ public class Borrow {
 
     public Timestamp getDueTime() {
         return dueTime;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public Timestamp getReturnTime() {

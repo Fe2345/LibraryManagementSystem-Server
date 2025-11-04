@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.edu.bjut.librarymanagementsystem.repository.BorrowRepository;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,18 @@ public class BorrowService {
     }
     public List<Borrow> getBorrowById(Integer id) {
         return borrowRepository.findByUserId(id);
+    }
+    public boolean renewBorrow(Integer borrowId, Integer days) {
+        Optional<Borrow> optionalBorrow = borrowRepository.findByBorrowId(borrowId);
+        if (optionalBorrow.isPresent()) {
+            Borrow borrow = optionalBorrow.get();
+            // 更新续借信息
+            borrow.setDueTime(new Timestamp(borrow.getDueTime().getTime() + days * 24 * 60 * 60 * 1000)); // 延长14天
+            borrow.setRenewCount(borrow.getRenewCount() + 1);
+            borrowRepository.save(borrow);
+            return true;
+        }
+        return false;
     }
     /*
 

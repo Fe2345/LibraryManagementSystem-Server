@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface BorrowRepository extends JpaRepository<Borrow, Long> {
 
     List<Borrow> findByUserId(Integer userId);
+
+    Optional<Borrow> findByBorrowId(Integer borrowId);
     /*
     // 根据书籍ID查找借阅记录
     List<Borrow> findByBookId(Long bookId);
