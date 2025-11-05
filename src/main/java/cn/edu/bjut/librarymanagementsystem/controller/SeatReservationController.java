@@ -1,5 +1,6 @@
 package cn.edu.bjut.librarymanagementsystem.controller;
 
+import cn.edu.bjut.librarymanagementsystem.dto.ApiResponse;
 import cn.edu.bjut.librarymanagementsystem.entity.SeatReservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/seats/reservations")
 public class SeatReservationController {
-    /*
+
     private final SeatReservationService seatReservationService;
 
     @Autowired
@@ -29,6 +30,17 @@ public class SeatReservationController {
         return new ResponseEntity<>(seatReservations, HttpStatus.OK);
     }
 
+    @GetMapping("/{reservationId}")
+    public ResponseEntity<ApiResponse> getSeatReservationById(@PathVariable Long reservationId) {
+        Optional<SeatReservation> seatReservation = seatReservationService.getSeatReservationById(reservationId);
+        if (seatReservation.isPresent()) {
+            return ResponseEntity.ok(new ApiResponse(true, "GET_SEAT_RESERVATION_SUCCESS", seatReservation.get()));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(false, "SEAT_RESERVATION_NOT_FOUND", null));
+        }
+    }
+    /*
     // 根据ID查找座位预约记录
     @GetMapping("/{id}")
     public ResponseEntity<SeatReservation> getSeatReservationById(@PathVariable Long id) {

@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 public class SeatReservationService {
-    /*
+
     private final SeatReservationRepository seatReservationRepository;
 
     @Autowired
@@ -20,15 +20,21 @@ public class SeatReservationService {
         this.seatReservationRepository = seatReservationRepository;
     }
 
+    // 根据ID查找座位预约记录
+    public Optional<SeatReservation> getSeatReservationById(Long id) {
+        return seatReservationRepository.findById(id);
+    }
+
+    public List<SeatReservation> getAllSeatReservations() {
+        return seatReservationRepository.findAll();
+    }
+    /*
     // 获取所有座位预约记录
     public List<SeatReservation> getAllSeatReservations() {
         return seatReservationRepository.findAll();
     }
 
-    // 根据ID查找座位预约记录
-    public Optional<SeatReservation> getSeatReservationById(Long id) {
-        return seatReservationRepository.findById(id);
-    }
+
 
     // 根据用户ID获取座位预约记录
     public List<SeatReservation> getSeatReservationsByUserId(Long userId) {

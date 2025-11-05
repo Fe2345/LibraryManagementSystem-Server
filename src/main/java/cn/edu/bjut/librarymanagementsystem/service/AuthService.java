@@ -64,7 +64,7 @@ public class AuthService {
             return new ApiResponse(false, "USER_NOT_EXIST", null);
         }
         var user = userOpt.get();
-        if (!pwEncoder.matches(req.oldPwd(), user.getPassword())) {
+        if (!pwEncoder.matches(req.newPwd(), user.getPassword())) {
             return new ApiResponse(false, "OLD_PWD_INCORRECT", null);
         }
         String newHash = pwEncoder.encode(req.newPwd());

@@ -5,19 +5,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.edu.bjut.librarymanagementsystem.repository.BorrowRepository;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class BorrowService {
-    /*
     private final BorrowRepository borrowRepository;
 
     @Autowired
     public BorrowService(BorrowRepository borrowRepository) {
         this.borrowRepository = borrowRepository;
     }
+    public List<Borrow> getBorrowById(Integer id) {
+        return borrowRepository.findByUserId(id);
+    }
+    public boolean renewBorrow(Integer borrowId, Integer days) {
+        Optional<Borrow> optionalBorrow = borrowRepository.findByBorrowId(borrowId);
+        if (optionalBorrow.isPresent()) {
+            Borrow borrow = optionalBorrow.get();
+            // 更新续借信息
+            borrow.setDueTime(new Timestamp(borrow.getDueTime().getTime() + days * 24 * 60 * 60 * 1000)); // 延长14天
+            borrow.setRenewCount(borrow.getRenewCount() + 1);
+            borrowRepository.save(borrow);
+            return true;
+        }
+        return false;
+    }
+    /*
 
     // 获取所有借阅记录
     public List<Borrow> getAllBorrows() {
@@ -25,14 +41,8 @@ public class BorrowService {
     }
 
     // 根据ID查找借阅记录
-    public Optional<Borrow> getBorrowById(Long id) {
-        return borrowRepository.findById(id);
-    }
 
-    // 根据用户ID查找借阅记录
-    public List<Borrow> getBorrowsByUserId(Long userId) {
-        return borrowRepository.findByUserId(userId);
-    }
+
 
     // 根据书籍ID查找借阅记录
     public List<Borrow> getBorrowsByBookId(Long bookId) {

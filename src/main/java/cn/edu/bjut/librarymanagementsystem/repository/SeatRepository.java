@@ -6,9 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SeatRepository extends JpaRepository<Seat, Long> {
+    Optional<Seat> findBySeatId(Integer seatId);
     /*
     // 根据座位状态查找座位
     List<Seat> findByStatus(String status);

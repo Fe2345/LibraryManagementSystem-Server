@@ -1,5 +1,7 @@
 package cn.edu.bjut.librarymanagementsystem.controller;
 
+import cn.edu.bjut.librarymanagementsystem.dto.ApiResponse;
+import cn.edu.bjut.librarymanagementsystem.dto.RenewRequest;
 import cn.edu.bjut.librarymanagementsystem.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +16,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/borrows")
 public class BorrowController {
-    /*
     private final BorrowService borrowService;
 
     @Autowired
@@ -22,6 +23,29 @@ public class BorrowController {
         this.borrowService = borrowService;
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<ApiResponse> getBorrowsByUserId(@PathVariable Integer userId) {
+        List<Borrow> borrows = borrowService.getBorrowById(userId);
+        if (!borrows.isEmpty()) {
+            return ResponseEntity.ok(new ApiResponse(true, "FETCH_SUCCESS", borrows));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(false, "BORROW_NOT_FOUND", null));
+        }
+    }
+
+    @PostMapping("/renew")
+    public ResponseEntity<ApiResponse> renewBorrow(@RequestBody RenewRequest req) {
+        System.out.println("Received renew request for borrowId: " + req.borrowId() + " for " + req.days() + " days");
+        boolean renewed = borrowService.renewBorrow(req.borrowId(),req.days());
+        if (renewed) {
+            return ResponseEntity.ok(new ApiResponse(true, "RENEW_SUCCESS", null));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(false, "RENEW_FAILED", null));
+        }
+    }
+    /*
     // 获取所有借阅记录
     @GetMapping
     public ResponseEntity<List<Borrow>> getAllBorrows() {
@@ -38,11 +62,6 @@ public class BorrowController {
     }
 
     // 根据用户ID获取借阅记录
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Borrow>> getBorrowsByUserId(@PathVariable Long userId) {
-        List<Borrow> borrows = borrowService.getBorrowsByUserId(userId);
-        return new ResponseEntity<>(borrows, HttpStatus.OK);
-    }
 
     // 根据书籍ID获取借阅记录
     @GetMapping("/book/{bookId}")
