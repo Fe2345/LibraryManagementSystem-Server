@@ -12,3 +12,5 @@ https://github.com/Fe2345/LibraryManagementSystem-Server.git
 
 ## API接口
 此项目仅为图书管理系统的后端部分，需要前端发送HTTP请求进行交互
+
+[Docs](./ServerAPI.md)
