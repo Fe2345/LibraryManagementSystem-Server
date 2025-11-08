@@ -5,10 +5,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Date;  // 添加此行以解决无法解析 'Date' 问题
+import java.util.Optional;
 
 
 @Repository
 public interface SeatReservationRepository extends JpaRepository<SeatReservation, Long> {
+    List<SeatReservation> findByUserId(Integer userId);
+
+    Optional<SeatReservation> findByReservationId(Integer reservationId);
     /*
     // 根据用户ID查找座位预约记录
     List<SeatReservation> findByUserId(Long userId);

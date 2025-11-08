@@ -2,6 +2,7 @@ package cn.edu.bjut.librarymanagementsystem.controller;
 
 import cn.edu.bjut.librarymanagementsystem.dto.ApiResponse;
 import cn.edu.bjut.librarymanagementsystem.dto.CommentRequest;
+import cn.edu.bjut.librarymanagementsystem.dto.CommentResponse;
 import cn.edu.bjut.librarymanagementsystem.entity.BookReview;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import cn.edu.bjut.librarymanagementsystem.service.BookReviewService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/book-reviews")
@@ -30,6 +30,12 @@ public class BookReviewController {
         return created ? ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse(true, "BOOK_REVIEW_CREATED", bookReview)) :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "BOOK_REVIEW_NOT_EXIST", bookReview));
+    }
+
+    @GetMapping("/allComments")
+    public ResponseEntity<ApiResponse> getAllBookReviews() {
+        List<CommentResponse> reviews = bookReviewService.getAllBookReviews();
+        return ResponseEntity.ok(new ApiResponse(true, "ALL_BOOK_REVIEWS_FETCHED", reviews));
     }
 /*
     // 根据ID获取书评

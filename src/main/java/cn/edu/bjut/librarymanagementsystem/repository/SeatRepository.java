@@ -11,6 +11,8 @@ import java.util.Optional;
 @Repository
 public interface SeatRepository extends JpaRepository<Seat, Long> {
     Optional<Seat> findBySeatId(Integer seatId);
+
+    int countByStatus(Seat.SeatStatus seatStatus);
     /*
     // 根据座位状态查找座位
     List<Seat> findByStatus(String status);

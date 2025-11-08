@@ -44,11 +44,77 @@
     "createdTime": "time"
   }
 ```
+## 座位管理
 
-## 座位预约
 分类：`/api/seat`
 
-#### 查看座位预约状态
+#### 查看全部座位状态
+- **URL**: `/api/seat/getAll`
+- **方法**: `GET`
+- **响应**:
+
+| code,message       | 情况      |
+|--------------------|---------|
+| 200,GET_ALL_SEATS_SUCCESS  | 请求成功    |
+- **数据**:
+
+```json
+[
+  {
+    "seatId": "int",
+    "seatNo" : "string",
+    "floor": "string",
+    "func": "自习区/讨论区/电源区",
+    "capacity": "int",
+    "status": "可用/维护/被占用"
+  }
+]
+```
+#### 获取可用座位数
+- **URL**: `/api/seat/availableCount`
+- **方法**: `GET`
+- **响应**:
+
+| code,message       | 情况      |
+|--------------------|---------|
+| 200,GET_AVAILABLE_SEAT_COUNT_SUCCESS  | 请求成功    |
+- **数据**:
+
+返回一个整数，表示当前可用座位数
+
+#### 获取全部预约
+- **URL**: `/api/seat/reservation/getAll`
+- **方法**:`GET`
+- **响应**
+
+| code,message      | 情况      |
+|-------------------|---------|
+| 200,FETCH_SUCCESS | 请求成功    |
+
+- **数据**:
+
+```json
+[
+    {
+      "reservationId": "int",
+      "userId": "int",
+      "seat": {
+        "seatId": "int",
+        "floor": "string",
+        "func": "自习区/讨论区/电源区",
+        "capacity": "int",
+        "status": "可用/维护/被占用"
+      },
+      "startTime": "time",
+      "endTime": "time",
+      "status": "待签到/已签到/已取消/已完成/爽约",
+      "checkinTime": "time",
+      "checkoutTime": "time"
+    }
+]
+```
+
+#### 查看指定预约ID的状态
 
 - **URL**: `/api/seat/reservation/{reservationId}`
 - **方法**:`GET`
@@ -64,18 +130,7 @@
 ```json
 {
   "reservationId": "int",
-  "user": {
-    "userId": "int",
-    "loginName": "string",
-    "password": "string",
-    "email": "string",
-    "phone": "string",
-    "realName": "string",
-    "gender": "男/女",
-    "studentNo": "int",
-    "department": "int",
-    "createdTime": "time"
-  },
+  "userId": "int",
   "seat": {
     "seatId": "int",
     "floor": "string",
@@ -90,6 +145,38 @@
   "checkoutTime": "time"
 }
 ```
+#### 查找指定ID用户的预约记录
+- **URL**: `/api/seat/reservation/user/{userId}`
+- **方法**:`GET`
+- **响应**
+
+| code,message                             | 情况      |
+|------------------------------------------|---------|
+| 200,GET_SEAT_RESERVATION_BY_USER_SUCCESS | 请求成功    |
+
+- **数据**:
+
+```json
+[
+    {
+      "reservationId": "int",
+      "userId": "int",
+      "seat": {
+        "seatId": "int",
+        "floor": "string",
+        "func": "自习区/讨论区/电源区",
+        "capacity": "int",
+        "status": "可用/维护/被占用"
+      },
+      "startTime": "time",
+      "endTime": "time",
+      "status": "待签到/已签到/已取消/已完成/爽约",
+      "checkinTime": "time",
+      "checkoutTime": "time"
+    }
+]
+```
+
 #### 切换预约状态
 - **URL**: `/api/seat/updateStatus/{seatId}`
 - **方法**: `PUT`
@@ -109,6 +196,26 @@
 |--------------------|--------------------|
 | 200,SEAT_STATUS_UPDATED  | 更新成功               |
 | 404,SEAT_NOT_FOUND | 指定座位不存在或不处于维护/可用状态 |
+
+## 座位预约管理
+分类：`/api/seats/reservations`
+
+#### 切换预约状态
+- **URL**: `/api/seats/reservations/setStatus`
+- **方法**: `POST`
+- **请求体**:
+```json
+{
+  "reservationId": "int",
+  "status": "待签到/已签到/已取消/已完成/爽约"
+}
+```
+- **响应**:
+
+| code,message       | 情况      |
+|--------------------|---------|
+| 200,TOGGLE_SEAT_RESERVATION_STATUS_SUCCESS  | 请求成功   |
+| 400,TOGGLE_FAILED  | 请求失败   |
 
 ## 图书管理
 
@@ -363,5 +470,92 @@
     "createdAt": "time",
     "updatedAt": "time"
   }
+]
+```
+
+## 借阅管理
+分类：`/api/borrows`
+
+#### 获取全部借阅
+- **URL**: `/api/borrows/getAll`
+- **方法**: `GET`
+- **响应**:
+
+| code,message      | 情况                |
+|-------------------|-------------------|
+| 200,FETCH_SUCCESS | 请求成功     |
+- **数据**
+
+```json
+[
+  {
+    "borrowId": "int",
+    "userId": "int",
+    "title": "string",
+    "barCode": "string",
+    "borrowTime": "time",
+    "dueTime": "time",
+    "returnTime": "time",
+    "renewCount": "int",
+    "lastRenewTime": "time"
+  }
+]
+```
+#### 获取指定用户当前在借图书数
+- **URL**: `/api/borrows/borrowed/{userId}`
+- **方法**: `GET`
+- **响应**:
+
+| code,message            | 情况                |
+|-------------------------|-------------------|
+| 200,COUNT_FETCHED | 请求成功     |
+
+#### 新增借阅
+- **URL**: `/api/borrows/borrow`
+- **方法**: `POST`
+- **请求体**:
+```json
+{
+    "userId": "int",
+    "barCode": "string",
+    "days": "int"
+}
+```
+- **响应**:
+
+| code,message            | 情况                |
+|-------------------------|-------------------|
+| 200,BORROW_SUCCESS | 借阅成功     |
+| 400,BORROW_FAILED  | 借阅失败     |
+## 图书评价管理
+
+分类:`/api/book-reviews`
+
+#### 获取全部评价
+- **URL**: `/api/seat/book-reviews/allComments`
+- **方法**:`GET`
+- **响应**
+
+| code,message       | 情况      |
+|--------------------|---------|
+| 200,ALL_BOOK_REVIEWS_FETCHED  | 请求成功    |
+
+- **数据**:
+
+```json
+[
+    {
+      "reviewId": "int",
+      "user": "int",
+      "bookId": "int",
+      "rating": "int",
+      "reviewTitle": "string",
+      "reviewContent": "string",
+      "imageAttachments": "Public/Hidden/Blocked",
+      "createdAt": "time",
+      "updatedAt": "time",
+      "isbn": "string",
+      "username": "string"
+    }
 ]
 ```

@@ -24,6 +24,12 @@ public class BorrowController {
         this.borrowService = borrowService;
     }
 
+    @GetMapping("/getAll")
+    public ResponseEntity<ApiResponse> getAllBorrows() {
+        List<Borrow> borrows = borrowService.getAllBorrows();
+        return ResponseEntity.ok(new ApiResponse(true, "FETCH_SUCCESS", borrows));
+    }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse> getBorrowsByUserId(@PathVariable Integer userId) {
         List<Borrow> borrows = borrowService.getBorrowById(userId);
@@ -33,6 +39,13 @@ public class BorrowController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse(false, "BORROW_NOT_FOUND", null));
         }
+    }
+
+    //指定用户当前在借书籍数量
+    @GetMapping("/borrowed/{userId}")
+    public ResponseEntity<ApiResponse> getBorrowedCountByUserId(@PathVariable Integer userId) {
+        int count = borrowService.getBorrowedCountByUserId(userId);
+        return ResponseEntity.ok(new ApiResponse(true, "COUNT_SUCCESS", count));
     }
 
     @PostMapping("/borrow")

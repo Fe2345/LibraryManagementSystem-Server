@@ -1,6 +1,9 @@
 package cn.edu.bjut.librarymanagementsystem.service;
 
+import cn.edu.bjut.librarymanagementsystem.dto.CommentResponse;
 import cn.edu.bjut.librarymanagementsystem.entity.BookReview;
+import cn.edu.bjut.librarymanagementsystem.repository.BookRepository;
+import cn.edu.bjut.librarymanagementsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.edu.bjut.librarymanagementsystem.repository.BookReviewRepository;
@@ -10,7 +13,10 @@ import java.util.Optional;
 
 @Service
 public class BookReviewService {
-
+    @Autowired
+    BookRepository bookRepository;
+    @Autowired
+    UserRepository userRepository;
 
     private final BookReviewRepository bookReviewRepository;
     @Autowired
@@ -26,6 +32,25 @@ public class BookReviewService {
         }catch (Exception e){
             return false;
         }
+    }
+
+    public List<CommentResponse> getAllBookReviews() {
+        //获取全部评价，并转换为CommentResponse返回
+        List<BookReview> reviews = bookReviewRepository.findAll();
+        return reviews.stream().map(review -> new CommentResponse(
+                review.getReviewId(),
+                review.getUserId(),
+                review.getBookId(),
+                review.getRating(),
+                review.getReviewTitle(),
+                review.getReviewContent(),
+                review.getImageAttachments(),
+                review.getStatus(),
+                review.getCreatedAt(),
+                review.getUpdatedAt(),
+                bookRepository.findById(review.getBookId()).get().getIsbn(),
+                userRepository.findByUserId(review.getUserId()).get().getLoginName()
+        )).toList();
     }
 /*
     // 获取所有书评

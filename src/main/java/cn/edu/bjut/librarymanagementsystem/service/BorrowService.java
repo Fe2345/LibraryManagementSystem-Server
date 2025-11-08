@@ -58,6 +58,15 @@ public class BorrowService {
         }
         return false;
     }
+
+    public int getBorrowedCountByUserId(Integer userId) {
+        List<Borrow> borrows = borrowRepository.findByUserIdAndStatus(userId, Borrow.BorrowStatus.借出中);
+        return borrows.size();
+    }
+
+    public List<Borrow> getAllBorrows() {
+        return  borrowRepository.findAll();
+    }
     /*
 
     // 获取所有借阅记录

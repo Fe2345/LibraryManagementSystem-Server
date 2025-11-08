@@ -2,6 +2,8 @@ package cn.edu.bjut.librarymanagementsystem.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.net.Inet4Address;
 import java.sql.Timestamp;
 
 @Data
@@ -11,22 +13,21 @@ public class SeatReservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservation_id")
-    private Long reservationId;
+    private Integer reservationId;
 
-    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private Users user;
+    private Integer userId;
 
     @ManyToOne
     @JoinColumn(name = "seat_id", nullable = false)
     private Seat seat;
 
-    public void setReservationId(Long reservationId) {
+    public void setReservationId(Integer reservationId) {
         this.reservationId = reservationId;
     }
 
-    public void setUser(Users user) {
-        this.user = user;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public void setSeat(Seat seat) {
@@ -53,12 +54,12 @@ public class SeatReservation {
         this.checkoutTime = checkoutTime;
     }
 
-    public Long getReservationId() {
+    public Integer getReservationId() {
         return reservationId;
     }
 
-    public Users getUser() {
-        return user;
+    public Integer getUserId() {
+        return userId;
     }
 
     public Seat getSeat() {

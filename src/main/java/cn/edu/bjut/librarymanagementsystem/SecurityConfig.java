@@ -15,15 +15,18 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/*",
                         "/api/borrows/*",
                         "/api/borrows/user/*",
+                        "/api/borrows/borrowed/*",
                         "/api/borrows/renew",
                         "/api/books/*",
                         "/api/books/updateBook/*",
                         "/api/books/delete/*",
                         "/api/seats/*",
                         "/api/seats/reservations/*",
+                        "/api/seats/reservations/user/*",
                         "/api/seats/setMaintain/*",
                         "/api/seats/updateStatus/*",
-                        "/api/book-locations/book/*").permitAll()
+                        "/api/book-locations/book/*",
+                        "/api/book-reviews/*").permitAll()
                 .anyRequest().authenticated()
             );
         return http.build();
