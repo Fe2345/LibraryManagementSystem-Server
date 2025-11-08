@@ -11,13 +11,23 @@ import java.util.Optional;
 @Service
 public class BookReviewService {
 
-    /*
+
     private final BookReviewRepository bookReviewRepository;
     @Autowired
     public BookReviewService(BookReviewRepository bookReviewRepository) {
         this.bookReviewRepository = bookReviewRepository;
     }
 
+    //添加书评
+    public boolean addBookReview(BookReview bookReview) {
+        try{
+            bookReviewRepository.save(bookReview);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+/*
     // 获取所有书评
     public List<BookReview> getAllBookReviews() {
         return bookReviewRepository.findAll();

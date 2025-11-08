@@ -1,5 +1,6 @@
 package cn.edu.bjut.librarymanagementsystem.controller;
 
+import cn.edu.bjut.librarymanagementsystem.dto.ApiResponse;
 import cn.edu.bjut.librarymanagementsystem.entity.BookLocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,9 +39,9 @@ public class BookLocationController {
 
     // 根据书籍ID获取所有位置
     @GetMapping("/book/{bookId}")
-    public ResponseEntity<List<BookLocation>> getBookLocationsByBookId(@PathVariable int bookId) {
+    public ResponseEntity<ApiResponse> getBookLocationsByBookId(@PathVariable int bookId) {
         List<BookLocation> locations = bookLocationService.getBookLocationsByBookId(bookId);
-        return new ResponseEntity<>(locations, HttpStatus.OK);
+        return ResponseEntity.ok(new ApiResponse(true, "FETCH_SUCCESS", locations));
     }
 
     // 根据位置状态获取图书位置
@@ -61,13 +62,6 @@ public class BookLocationController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBookLocation(@PathVariable Long id) {
         bookLocationService.deleteBookLocation(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    // 更新图书位置状态
-    @PutMapping("/{id}/status")
-    public ResponseEntity<Void> updateBookLocationStatus(@PathVariable Long id, @RequestParam String status) {
-        bookLocationService.updateBookLocationStatus(id, status);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -109,3 +109,259 @@
 |--------------------|--------------------|
 | 200,SEAT_STATUS_UPDATED  | 更新成功               |
 | 404,SEAT_NOT_FOUND | 指定座位不存在或不处于维护/可用状态 |
+
+## 图书管理
+
+分类：`/api/books`
+#### 获取全部图书信息
+- **URL**: `/api/books/getAll`
+- **方法**: `GET`
+- **响应**:
+
+| code,message       | 情况      |
+|--------------------|---------|
+| 200,GET_ALL_SUCCESS  | 请求成功    |
+  
+- **数据**:
+
+```json
+[
+  {
+    "bookId": "int",
+    "title": "string",
+    "authors": "string",
+    "subtitle": "string",
+    "isbn": "string",
+    "publisher": "string",
+    "pubYear": "int",
+    "language": "string",
+    "keywords": "string",
+    "summary": "string",
+    "pages": "int",
+    "edition": "string",
+    "totalCopies": "int",
+    "availableCopies": "int",
+    "status" : "上架/下架",
+    "storageTime": "time",
+    "updatedAt": "time"
+  }
+]
+```
+#### 按照书名搜索图书
+- **URL**: `/api/books/searchByTitle/{title}`
+- **方法**: `POST`
+- **请求体**:
+```json
+{
+  "title": "string"
+}
+```
+- **响应**:
+
+| code,message       | 情况      |
+|--------------------|---------|
+| 200,SEARCH_SUCCESS  | 请求成功    |
+- **数据**:
+
+```json
+  {
+    "bookId": "int",
+    "title": "string",
+    "authors": "string",
+    "subtitle": "string",
+    "isbn": "string",
+    "publisher": "string",
+    "pubYear": "int",
+    "language": "string",
+    "keywords": "string",
+    "summary": "string",
+    "pages": "int",
+    "edition": "string",
+    "totalCopies": "int",
+    "availableCopies": "int",
+    "status" : "上架/下架",
+    "storageTime": "time",
+    "updatedAt": "time"
+  }
+```
+#### 按照ID范围搜索图书
+- **URL**: `/api/books/rangeSearch`
+- **方法**: `POST`
+- **请求体**:
+```json
+{
+  "startId": "int",
+  "endId": "int"
+}
+```
+- **响应**:
+
+| code,message       | 情况      |
+|--------------------|---------|
+| 200,RANGE_SEARCH_SUCCESS  | 请求成功    |
+
+#### 复杂检索
+- **URL**: `/api/books/complexSearch`
+- **方法**: `POST`
+- **请求体**:
+```json
+{
+  "title": "string",
+  "author": "string",
+  "isbn": "string",
+  "publisher": "string",
+  "yearFrom": "int",
+  "yearTo": "int",
+  "status": "在馆/借出/丢失"
+}
+```
+- **响应**:
+
+| code,message       | 情况      |
+|--------------------|---------|
+| 200,COMPLEX_SEARCH_SUCCESS  | 请求成功    |
+- **数据**:
+```json
+[
+  {
+    "bookId": "int",
+    "title": "string",
+    "authors": "string",
+    "subtitle": "string",
+    "isbn": "string",
+    "publisher": "string",
+    "pubYear": "int",
+    "language": "string",
+    "keywords": "string",
+    "summary": "string",
+    "pages": "int",
+    "edition": "string",
+    "totalCopies": "int",
+    "availableCopies": "int",
+    "status" : "上架/下架",
+    "storageTime": "time",
+    "updatedAt": "time"
+  }
+]
+```
+#### 添加图书信息
+
+添加时，自动生成storageTime
+
+- **URL**: `/api/books/addBook`
+- **方法**: `POST`
+- **请求体**:
+```json
+{
+  "title": "string",
+  "authors": "string",
+  "subtitle": "string",
+  "isbn": "string",
+  "publisher": "string",
+  "pubYear": "int",
+  "language": "string",
+  "keywords": "string",
+  "summary": "string",
+  "pages": "int",
+  "edition": "string",
+  "totalCopies": "int",
+  "availableCopies": "int"
+}
+```
+- **响应**:
+
+| code,message       | 情况      |
+|--------------------|---------|
+| 200,ADD_BOOK_SUCCESS  | 添加成功    |
+| 200,ADD_BOOK_FAILED   | 添加失败    |
+
+- **数据**
+
+直接返回一个int数据，即数据库中书籍的ID
+
+#### 更新图书信息
+
+更新时会保留原始的storageTime，仅更新其他字段，updatedAt时间由后端自动生成。
+
+- **URL**: `/api/books/updateBook/{id}`
+- **方法**: `POST`
+- **请求体**:
+```json
+{
+  "title": "string",
+  "authors": "string",
+  "subtitle": "string",
+  "isbn": "string",
+  "publisher": "string",
+  "pubYear": "int",
+  "language": "string",
+  "keywords": "string",
+  "summary": "string",
+  "pages": "int",
+  "edition": "string",
+  "totalCopies": "int",
+  "availableCopies": "int"
+}
+```
+- **响应**:
+
+| code,message            | 情况   |
+|-------------------------|------|
+| 200,UPDATE_BOOK_SUCCESS | 更新成功 |
+| 200,UPDATE_BOOK_FAILED  | 更新失败 |
+
+#### 删除图书
+- **URL**: `/api/books/deleteBook/{id}`
+- **方法**: `DELETE`
+- **响应**:
+
+| code,message            | 情况   |
+|-------------------------|------|
+| 200,DELETE_BOOK_SUCCESS | 删除成功 |
+
+#### 变更图书状态
+- **URL**: `/api/books/updateStatus`
+- **方法**: `POST`
+- **请求体**:
+```json
+{
+  "bookId": "int",
+  "bookStatus": "上架/下架"
+}
+```
+- **响应**:
+
+| code,message            | 情况   |
+|-------------------------|------|
+| 200,UPDATE_STATUS_SUCCESS | 变更成功 |
+| 404,UPDATE_STATUS_FAILED  | 变更失败 |
+
+## 图书位置信息
+
+#### 查询指定ID图书的全部副本
+- **URL**: `/api/book-locations/book/{bookId}`
+- **方法**: `GET`
+- **响应**:
+
+| code,message            | 情况                |
+|-------------------------|-------------------|
+| 200,FETCH_SUCCESS | 请求成功     |
+- **数据**
+
+```json
+[
+  {
+    "barcode": "string",
+    "bookId": "int",
+    "branch": "string",
+    "floor": "string",
+    "shelfNo": "string",
+    "cellNo": "string",
+    "status": "在馆/借出/丢失",
+    "price": "BigDecimal",
+    "damageNote": "string",
+    "createdAt": "time",
+    "updatedAt": "time"
+  }
+]
+```

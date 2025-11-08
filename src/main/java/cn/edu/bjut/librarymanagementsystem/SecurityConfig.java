@@ -13,13 +13,17 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/*",
+                        "/api/borrows/*",
                         "/api/borrows/user/*",
                         "/api/borrows/renew",
                         "/api/books/*",
+                        "/api/books/updateBook/*",
+                        "/api/books/delete/*",
                         "/api/seats/*",
                         "/api/seats/reservations/*",
                         "/api/seats/setMaintain/*",
-                        "/api/seats/updateStatus/*").permitAll()
+                        "/api/seats/updateStatus/*",
+                        "/api/book-locations/book/*").permitAll()
                 .anyRequest().authenticated()
             );
         return http.build();

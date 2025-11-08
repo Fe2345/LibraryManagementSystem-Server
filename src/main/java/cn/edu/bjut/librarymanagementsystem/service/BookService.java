@@ -1,6 +1,7 @@
 package cn.edu.bjut.librarymanagementsystem.service;
 
 import cn.edu.bjut.librarymanagementsystem.dto.BookQueryRequest;
+import cn.edu.bjut.librarymanagementsystem.dto.BookRequest;
 import cn.edu.bjut.librarymanagementsystem.entity.Book;
 import cn.edu.bjut.librarymanagementsystem.entity.BookLocation;
 import cn.edu.bjut.librarymanagementsystem.repository.BookLocationRepository;
@@ -8,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.edu.bjut.librarymanagementsystem.repository.BookRepository;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,12 +44,36 @@ public class BookService {
     }
 
     // 更新书籍
-    public Book updateBook(Integer id, Book book) {
+    public boolean updateBook(Integer id,BookRequest req) {
+        Book book = BookRequestToEntityFormat(req);
         if (bookRepository.existsById(id)) {
             book.setBookId(id); // 设置bookId以确保更新的是正确的书籍
-            return bookRepository.save(book);
+            book.setStorageTime(bookRepository.findById(id).get().getStorageTime()); // 保持原有的存储时间不变
+            book.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
+            bookRepository.save(book);
+            return true;
         }
-        return null;
+        return false;
+    }
+
+    private Book BookRequestToEntityFormat(BookRequest req) {
+        Book book = new Book();
+        book.setTitle(req.title());
+        book.setAuthors(req.authors());
+        book.setSubtitle(req.subtitle());
+        book.setIsbn(req.isbn());
+        book.setPublisher(req.publisher());
+        book.setPubYear(Year.of(req.pubYear()));
+        book.setLanguage(req.language());
+        book.setKeywords(req.keywords());
+        book.setSummary(req.summary());
+        book.setPages(req.pages());
+        book.setEdition(req.edition());
+        book.setTotalCopies(req.totalCopies());
+        book.setAvailableCopies(req.availableCopies());
+        book.setStorageTime(Timestamp.valueOf(LocalDateTime.now()));
+        book.setStatus(Book.BookStatus.上架);
+        return book;
     }
 
     // 删除书籍
@@ -73,9 +101,42 @@ public class BookService {
         }
         if (req.status() != null){
             List<BookLocation> locations = bookLocationRepository.findByStatus(req.status());
-            List<Integer> bookIds = locations.stream().map(BookLocation::getBook).toList();
+            List<Integer> bookIds = locations.stream().map(BookLocation::getBookId).toList();
             books = books.stream().filter(book -> bookIds.contains(book.getBookId())).toList();
         }
         return books;
+    }
+
+    public Integer addBook(BookRequest req) {
+        try{
+            Book book = BookRequestToEntityFormat(req);
+            return bookRepository.save(book).getBookId();
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    public boolean decreaseAvailableCopies(Integer bookId) {
+        Optional<Book> optionalBook = bookRepository.findById(bookId);
+        if (optionalBook.isPresent()) {
+            Book book = optionalBook.get();
+            if (book.getAvailableCopies() > 0) {
+                book.setAvailableCopies(book.getAvailableCopies() - 1);
+                bookRepository.save(book);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean updateBookStatus(Integer bookId, Book.BookStatus status) {
+        Optional<Book> optionalBook = bookRepository.findById(bookId);
+        if (optionalBook.isPresent()) {
+            Book book = optionalBook.get();
+            book.setStatus(status);
+            bookRepository.save(book);
+            return true;
+        }
+        return false;
     }
 }

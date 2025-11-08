@@ -1,15 +1,16 @@
 package cn.edu.bjut.librarymanagementsystem.controller;
 
-import cn.edu.bjut.librarymanagementsystem.dto.ApiResponse;
-import cn.edu.bjut.librarymanagementsystem.dto.BookQueryByIdRequest;
-import cn.edu.bjut.librarymanagementsystem.dto.BookQueryByTitleRequest;
-import cn.edu.bjut.librarymanagementsystem.dto.BookQueryRequest;
+import cn.edu.bjut.librarymanagementsystem.dto.*;
 import cn.edu.bjut.librarymanagementsystem.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import cn.edu.bjut.librarymanagementsystem.service.BookService;
+import cn.edu.bjut.librarymanagementsystem.entity.Book.BookStatus;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,12 +22,12 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping("getAll")
-    public ResponseEntity<List<Book>> getAllBooks(){
+    public ResponseEntity<ApiResponse> getAllBooks(){
         List<Book> books = bookService.getAllBooks();
-        return ResponseEntity.ok(books);
+        return ResponseEntity.ok(new ApiResponse(true, "GET_ALL_SUCCESS", books));
     }
     // 根据书名查找书籍
-    @PostMapping("/search")
+    @PostMapping("/searchTitle")
     public ResponseEntity<ApiResponse> searchBooksByTitle(@RequestBody BookQueryByTitleRequest req) {
         List<Book> books = bookService.getBooksByTitle(req.title());
         return ResponseEntity.ok(new ApiResponse(true, "SEARCH_SUCCESS", books));
@@ -58,20 +59,32 @@ public class BookController {
     }
 
     // 添加新书籍
-    @PostMapping
-    public Book addBook(@RequestBody Book book) {
-        return bookService.saveBook(book);
+    @PostMapping("/addBook")
+    public ResponseEntity<ApiResponse> addBook(@RequestBody BookRequest req) {
+        Integer id = bookService.addBook(req);
+        return id!=null ? ResponseEntity.ok(new ApiResponse(true, "ADD_BOOK_SUCCESS", id)) :
+                ResponseEntity.ok(new ApiResponse(false, "ADD_BOOK_FAILED", id));
     }
 
-    // 更新书籍
-    @PutMapping("/{id}")
-    public Book updateBook(@PathVariable Integer id, @RequestBody Book book) {
-        return bookService.updateBook(id, book);
+    // 更新书籍信息
+    @PostMapping("/updateBook/{id}")
+    public ResponseEntity<ApiResponse> updateBook(@PathVariable Integer id,@RequestBody BookRequest req) {
+        boolean created = bookService.updateBook(id,req);
+        return created ? ResponseEntity.ok(new ApiResponse(true, "UPDATE_BOOK_SUCCESS", null)) :
+                ResponseEntity.ok(new ApiResponse(false, "UPDATE_BOOK_FAILED", null));
     }
 
     // 删除书籍
-    @DeleteMapping("/{id}")
-    public void deleteBook(@PathVariable Integer id) {
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse> deleteBook(@PathVariable Integer id) {
         bookService.deleteBook(id);
+        return ResponseEntity.ok(new ApiResponse(true, "DELETE_BOOK_SUCCESS", null));
+    }
+
+    @PostMapping("/updateStatus")
+    public ResponseEntity<ApiResponse> updateBookStatus(@RequestBody BookStatusUpdateRequest req) {
+        boolean updated = bookService.updateBookStatus(req.bookId(), BookStatus.valueOf(req.bookStatus()));
+        return updated ? ResponseEntity.ok(new ApiResponse(true, "UPDATE_STATUS_SUCCESS", null)) :
+                ResponseEntity.ok(new ApiResponse(false, "UPDATE_STATUS_FAILED", null));
     }
 }

@@ -14,7 +14,7 @@ public class BookLocation {
     private String barcode;
 
     @JoinColumn(name = "book_id", nullable = false)
-    private int book;
+    private int bookId;
 
     private String branch;
 
@@ -65,8 +65,8 @@ public class BookLocation {
         this.barcode = barcode;
     }
 
-    public void setBook(int book) {
-        this.book = book;
+    public void setBook(int bookId) {
+        this.bookId = bookId;
     }
 
     public void setBranch(String branch) {
@@ -89,8 +89,8 @@ public class BookLocation {
         return barcode;
     }
 
-    public int getBook() {
-        return book;
+    public int getBookId() {
+        return bookId;
     }
 
     public String getBranch() {

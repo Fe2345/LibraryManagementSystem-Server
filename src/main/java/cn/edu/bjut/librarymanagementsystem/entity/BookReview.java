@@ -19,9 +19,8 @@ public class BookReview {
     @JoinColumn(name = "user_id", nullable = false)
     private Users user;
 
-    @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
-    private Book book;
+    private Integer bookId;
 
     @Column(nullable = false)
     private Byte rating;
@@ -47,8 +46,8 @@ public class BookReview {
     @Column(name = "updated_at", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Timestamp updatedAt;
 
-    public void setBook(Book book) {
-        this.book = book;
+    public void setBookId(Integer bookId) {
+        this.bookId = bookId;
     }
 
     public void setReviewTitle(String reviewTitle) {
@@ -79,8 +78,8 @@ public class BookReview {
         return user;
     }
 
-    public Book getBook() {
-        return book;
+    public Integer getBookId() {
+        return bookId;
     }
 
     public Byte getRating() {

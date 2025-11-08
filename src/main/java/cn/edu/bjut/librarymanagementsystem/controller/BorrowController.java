@@ -1,6 +1,7 @@
 package cn.edu.bjut.librarymanagementsystem.controller;
 
 import cn.edu.bjut.librarymanagementsystem.dto.ApiResponse;
+import cn.edu.bjut.librarymanagementsystem.dto.BorrowRequest;
 import cn.edu.bjut.librarymanagementsystem.dto.RenewRequest;
 import cn.edu.bjut.librarymanagementsystem.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +35,19 @@ public class BorrowController {
         }
     }
 
+    @PostMapping("/borrow")
+    public ResponseEntity<ApiResponse> createBorrow(@RequestBody BorrowRequest req) {
+        boolean created = borrowService.createBorrow(req.userId(), req.barCode(),req.days());
+        if (created) {
+            return ResponseEntity.ok(new ApiResponse(true, "BORROW_SUCCESS", null));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(false, "BORROW_FAILED", null));
+        }
+    }
+
     @PostMapping("/renew")
     public ResponseEntity<ApiResponse> renewBorrow(@RequestBody RenewRequest req) {
-        System.out.println("Received renew request for borrowId: " + req.borrowId() + " for " + req.days() + " days");
         boolean renewed = borrowService.renewBorrow(req.borrowId(),req.days());
         if (renewed) {
             return ResponseEntity.ok(new ApiResponse(true, "RENEW_SUCCESS", null));

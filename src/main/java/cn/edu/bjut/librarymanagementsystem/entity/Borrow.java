@@ -13,15 +13,15 @@ public class Borrow {
     @Column(name = "borrow_id")
     private Integer borrowId;
 
-    @JoinColumn(name = "user_id", nullable = false)
+    // 普通列而不是@JoinColumn（@JoinColumn 用于实体关联）
+    @Column(name = "user_id", nullable = false)
     private Integer userId;
 
-    @JoinColumn(name = "title",nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @ManyToOne
-    @JoinColumn(name = "barcode", nullable = false)
-    private BookLocation bookLocation;
+    @Column(name = "barcode", nullable = false)
+    private String barCode;
 
     @Column(name = "borrow_time", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private Timestamp borrowTime;
@@ -39,16 +39,19 @@ public class Borrow {
     @Column(name = "renew_count", columnDefinition = "INT DEFAULT 0")
     private Integer renewCount;
 
+    @Column(name = "last_renew_time")
+    private Timestamp lastRenewTime;
+
     public void setBorrowId(Integer borrowId) {
         this.borrowId = borrowId;
     }
 
-    public void setUserId(Integer user) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
-    public void setBookLocation(BookLocation bookLocation) {
-        this.bookLocation = bookLocation;
+    public void setBarCode(String barCode) {
+        this.barCode = barCode;
     }
 
     public void setBorrowTime(Timestamp borrowTime) {
@@ -87,8 +90,8 @@ public class Borrow {
         return userId;
     }
 
-    public BookLocation getBookLocation() {
-        return bookLocation;
+    public String getBarCode() {
+        return barCode;
     }
 
     public Timestamp getBorrowTime() {
@@ -119,8 +122,6 @@ public class Borrow {
         return lastRenewTime;
     }
 
-    @Column(name = "last_renew_time")
-    private Timestamp lastRenewTime;
 
     public enum BorrowStatus {
         借出中, 已归还, 逾期中, 挂失中, 异常
