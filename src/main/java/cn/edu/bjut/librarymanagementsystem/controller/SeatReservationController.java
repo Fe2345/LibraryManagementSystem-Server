@@ -1,6 +1,7 @@
 package cn.edu.bjut.librarymanagementsystem.controller;
 
 import cn.edu.bjut.librarymanagementsystem.dto.ApiResponse;
+import cn.edu.bjut.librarymanagementsystem.dto.SetSeatReservationStatusRequest;
 import cn.edu.bjut.librarymanagementsystem.entity.SeatReservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,10 +25,10 @@ public class SeatReservationController {
     }
 
     // 获取所有座位预约记录
-    @GetMapping
-    public ResponseEntity<List<SeatReservation>> getAllSeatReservations() {
+    @GetMapping("/getAll")
+    public ResponseEntity<ApiResponse> getAllSeatReservations() {
         List<SeatReservation> seatReservations = seatReservationService.getAllSeatReservations();
-        return new ResponseEntity<>(seatReservations, HttpStatus.OK);
+        return ResponseEntity.ok(new ApiResponse(true, "FETCH_SUCCESS", seatReservations));
     }
 
     @GetMapping("/{reservationId}")
@@ -40,6 +41,23 @@ public class SeatReservationController {
                     .body(new ApiResponse(false, "SEAT_RESERVATION_NOT_FOUND", null));
         }
     }
+    // 根据用户ID获取座位预约记录
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<ApiResponse> getSeatReservationsByUserId(@PathVariable Integer userId) {
+        List<SeatReservation> seatReservations = seatReservationService.getSeatReservationsByUserId(userId);
+        return ResponseEntity.ok(new ApiResponse(true, "GET_SEAT_RESERVATIONS_BY_USER_SUCCESS", seatReservations));
+    }
+
+    @PostMapping("/setStatus")
+    public ResponseEntity<ApiResponse> toggleSeatReservationStatus(@RequestBody SetSeatReservationStatusRequest setSeatReservationStatusRequest) {
+        try {
+            boolean updated = seatReservationService.toggleSeatReservationStatus(setSeatReservationStatusRequest.reservationId(),setSeatReservationStatusRequest.status());
+            return ResponseEntity.ok(new ApiResponse(true, "TOGGLE_SEAT_RESERVATION_STATUS_SUCCESS", null));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(false, "TOGGLE_FAILED", null));
+        }
+    }
     /*
     // 根据ID查找座位预约记录
     @GetMapping("/{id}")
@@ -49,12 +67,7 @@ public class SeatReservationController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    // 根据用户ID获取座位预约记录
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<SeatReservation>> getSeatReservationsByUserId(@PathVariable Long userId) {
-        List<SeatReservation> seatReservations = seatReservationService.getSeatReservationsByUserId(userId);
-        return new ResponseEntity<>(seatReservations, HttpStatus.OK);
-    }
+
 
     // 根据座位ID获取座位预约记录
     @GetMapping("/seat/{seatId}")

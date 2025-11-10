@@ -18,4 +18,6 @@ public interface UserRepository extends JpaRepository<Users, Long> {
 
     // 根据登录名查找用户
     Optional<Users> findByLoginName(String loginName);
+
+    Optional<Users> findByUserId(Integer Userid);
 }

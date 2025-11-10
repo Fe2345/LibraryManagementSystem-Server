@@ -13,15 +13,13 @@ public class BookReview {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
-    private Long reviewId;
+    private Integer reviewId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private Users user;
+    @Column(name = "user_id", nullable = false)
+    private Integer userId;
 
-    @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
-    private Book book;
+    private Integer bookId;
 
     @Column(nullable = false)
     private Byte rating;
@@ -47,8 +45,12 @@ public class BookReview {
     @Column(name = "updated_at", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Timestamp updatedAt;
 
-    public void setBook(Book book) {
-        this.book = book;
+    public void setBookId(Integer bookId) {
+        this.bookId = bookId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public void setReviewTitle(String reviewTitle) {
@@ -71,16 +73,16 @@ public class BookReview {
         this.updatedAt = updatedAt;
     }
 
-    public Long getReviewId() {
+    public Integer getReviewId() {
         return reviewId;
     }
 
-    public Users getUser() {
-        return user;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public Book getBook() {
-        return book;
+    public Integer getBookId() {
+        return bookId;
     }
 
     public Byte getRating() {

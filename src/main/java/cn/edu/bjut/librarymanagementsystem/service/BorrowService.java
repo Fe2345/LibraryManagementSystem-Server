@@ -12,15 +12,40 @@ import java.util.Optional;
 
 @Service
 public class BorrowService {
-    private final BorrowRepository borrowRepository;
-
     @Autowired
+    private final BorrowRepository borrowRepository;
+    @Autowired
+    private BookLocationService bookLocationService;
+    @Autowired
+    private BookService bookService;
+
     public BorrowService(BorrowRepository borrowRepository) {
         this.borrowRepository = borrowRepository;
     }
+
     public List<Borrow> getBorrowById(Integer id) {
         return borrowRepository.findByUserId(id);
     }
+
+    public boolean createBorrow(Integer userId, String barCode,Integer days) {
+        System.out.println(userId);
+        Borrow borrow = new Borrow();
+        borrow.setUserId(userId);
+        borrow.setBarCode(barCode);
+        String title = bookService.getBookById(bookLocationService.getBookLocationByBarCode(barCode).get().getBookId()).getTitle();
+        borrow.setTitle(title);
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        borrow.setBorrowTime(now);
+        borrow.setDueTime(new Timestamp(now.getTime() + days * 24 * 60 * 60 * 1000)); // 设置到期时间为借阅时间加上指定天数
+        borrow.setStatus(Borrow.BorrowStatus.借出中);
+        borrow.setRenewCount(0);
+        System.out.println(borrow);
+        borrowRepository.save(borrow);
+        bookLocationService.updateBookLocationStatus(barCode,"借出");
+        bookService.decreaseAvailableCopies(bookLocationService.getBookLocationByBarCode(barCode).get().getBookId());
+        return true;
+    }
+
     public boolean renewBorrow(Integer borrowId, Integer days) {
         Optional<Borrow> optionalBorrow = borrowRepository.findByBorrowId(borrowId);
         if (optionalBorrow.isPresent()) {
@@ -33,14 +58,21 @@ public class BorrowService {
         }
         return false;
     }
+
+    public int getBorrowedCountByUserId(Integer userId) {
+        List<Borrow> borrows = borrowRepository.findByUserIdAndStatus(userId, Borrow.BorrowStatus.借出中);
+        return borrows.size();
+    }
+
+    public List<Borrow> getAllBorrows() {
+        return  borrowRepository.findAll();
+    }
     /*
 
     // 获取所有借阅记录
     public List<Borrow> getAllBorrows() {
         return borrowRepository.findAll();
     }
-
-    // 根据ID查找借阅记录
 
 
 

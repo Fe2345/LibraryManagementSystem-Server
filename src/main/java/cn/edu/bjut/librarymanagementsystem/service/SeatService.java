@@ -30,8 +30,10 @@ public class SeatService {
             // 切换座位状态
             if (SeatStatus.可用.equals(seat.getStatus())) {
                 seat.setStatus(SeatStatus.被占用);
+                seat.setCapacity(0);
             } else {
                 seat.setStatus(SeatStatus.可用);
+                seat.setCapacity(1);
             }
             seatRepository.save(seat);
             return true;
@@ -52,6 +54,11 @@ public class SeatService {
         } else {
             return false;
         }
+    }
+
+    public int getAvailableSeatCount() {
+        // 计算状态为“可用”的座位数量
+        return seatRepository.countByStatus(SeatStatus.可用);
     }
     /*
 

@@ -30,7 +30,12 @@ public class BookLocationService {
 
     // 根据书籍ID查找所有位置
     public List<BookLocation> getBookLocationsByBookId(int bookId) {
-        return bookLocationRepository.findByBook(bookId);
+        return bookLocationRepository.findByBookId(bookId);
+    }
+
+    //根据BarCode查找图书位置
+    public Optional<BookLocation> getBookLocationByBarCode(String barCode) {
+        return bookLocationRepository.findByBarcode(barCode);
     }
 
     // 根据图书位置状态查找
@@ -49,8 +54,8 @@ public class BookLocationService {
     }
 
     // 更新图书位置状态
-    public boolean updateBookLocationStatus(Long id, String newStatus) {
-        Optional<BookLocation> optional = bookLocationRepository.findById(id);
+    public boolean updateBookLocationStatus(String barCode, String newStatus) {
+        Optional<BookLocation> optional = bookLocationRepository.findByBarcode(barCode);
         if (optional.isPresent()) {
             BookLocation location = optional.get();
             try {

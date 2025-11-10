@@ -30,6 +30,14 @@ public class SeatController {
         return ResponseEntity.ok(new ApiResponse(true,"GET_ALL_SEATS_SUCCESS", seats));
     }
 
+    //获取可用座位数
+    @GetMapping("/availableCount")
+    public ResponseEntity<ApiResponse> getAvailableSeatCount() {
+        int count = seatService.getAvailableSeatCount();
+        return ResponseEntity.ok(new ApiResponse(true, "GET_AVAILABLE_SEAT_COUNT_SUCCESS", count
+));
+    }
+
     @PutMapping("/updateStatus/{seatId}")
     public ResponseEntity<ApiResponse> updateStatus(@PathVariable Integer seatId) {
         boolean updated = seatService.updateSeatStatus(seatId);

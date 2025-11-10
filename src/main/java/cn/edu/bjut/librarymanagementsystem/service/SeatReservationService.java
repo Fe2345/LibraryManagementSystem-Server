@@ -28,6 +28,23 @@ public class SeatReservationService {
     public List<SeatReservation> getAllSeatReservations() {
         return seatReservationRepository.findAll();
     }
+
+    public List<SeatReservation> getSeatReservationsByUserId(Integer userId) {
+        return seatReservationRepository.findByUserId(userId);
+    }
+
+    public boolean toggleSeatReservationStatus(Integer reservationId,String status) {
+        Optional<SeatReservation> optionalReservation = seatReservationRepository.findByReservationId(reservationId);
+        if (optionalReservation.isPresent()) {
+            SeatReservation reservation = optionalReservation.get();
+            // 切换状态
+            reservation.setStatus(ReservationStatus.valueOf(status));
+            seatReservationRepository.save(reservation);
+            return true;
+        } else {
+            return false;
+        }
+    }
     /*
     // 获取所有座位预约记录
     public List<SeatReservation> getAllSeatReservations() {
