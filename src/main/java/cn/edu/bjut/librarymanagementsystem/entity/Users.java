@@ -39,6 +39,9 @@ public class Users {
     @Column(name = "created_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdTime;
 
+    @Column(name = "role_code", nullable = false)
+    private String roleCode = "USER";
+
     public void setStudentNo(String studentNo) {
         this.studentNo = studentNo;
     }
@@ -77,6 +80,10 @@ public class Users {
 
     public void setGender(Gender gender) {
         this.gender = gender;
+    }
+
+    public void setRoleCode(String roleCode) {
+        this.roleCode = roleCode;
     }
 
     public Integer getUserId() {
@@ -119,7 +126,15 @@ public class Users {
         return createdTime;
     }
 
+    public  String getRoleCode() {
+        return roleCode;
+    }
+
     public enum Gender {
         男, 女
+    }
+
+    public enum Role {
+        学生, 管理员
     }
 }

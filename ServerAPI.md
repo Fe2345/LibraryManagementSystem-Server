@@ -46,10 +46,10 @@
 ```
 ## 座位管理
 
-分类：`/api/seat`
+分类：`/api/seats`
 
 #### 查看全部座位状态
-- **URL**: `/api/seat/getAll`
+- **URL**: `/api/seats/getAll`
 - **方法**: `GET`
 - **响应**:
 
@@ -71,7 +71,7 @@
 ]
 ```
 #### 获取可用座位数
-- **URL**: `/api/seat/availableCount`
+- **URL**: `/api/seats/availableCount`
 - **方法**: `GET`
 - **响应**:
 
@@ -83,7 +83,7 @@
 返回一个整数，表示当前可用座位数
 
 #### 获取全部预约
-- **URL**: `/api/seat/reservation/getAll`
+- **URL**: `/api/seats/reservation/getAll`
 - **方法**:`GET`
 - **响应**
 
@@ -116,7 +116,7 @@
 
 #### 查看指定预约ID的状态
 
-- **URL**: `/api/seat/reservation/{reservationId}`
+- **URL**: `/api/seats/reservation/{reservationId}`
 - **方法**:`GET`
 - **响应**
 
@@ -146,7 +146,7 @@
 }
 ```
 #### 查找指定ID用户的预约记录
-- **URL**: `/api/seat/reservation/user/{userId}`
+- **URL**: `/api/seats/reservation/user/{userId}`
 - **方法**:`GET`
 - **响应**
 
@@ -178,7 +178,7 @@
 ```
 
 #### 切换预约状态
-- **URL**: `/api/seat/updateStatus/{seatId}`
+- **URL**: `/api/seats/updateStatus/{seatId}`
 - **方法**: `PUT`
 - **响应**:
 
@@ -188,7 +188,7 @@
 | 404,SEAT_NOT_FOUND | 指定座位不存在或不处于可用/已占用状态 |
 #### 切换维护状态
 
-- **URL**: `/api/seat/toggleMaintain/{seatId}`
+- **URL**: `/api/seats/toggleMaintain/{seatId}`
 - **方法**: `PUT`
 - **响应**:
 

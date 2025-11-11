@@ -30,7 +30,7 @@ public class BookService {
 
     // 根据书名查找书籍
     public List<Book> getBooksByTitle(String title) {
-        return bookRepository.findByTitle(title);
+        return bookRepository.findBooksByTitleContaining(title);
     }
 
     // 根据ID查找书籍

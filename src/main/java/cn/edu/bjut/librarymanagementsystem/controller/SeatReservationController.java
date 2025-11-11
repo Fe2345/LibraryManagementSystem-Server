@@ -58,6 +58,18 @@ public class SeatReservationController {
                     .body(new ApiResponse(false, "TOGGLE_FAILED", null));
         }
     }
+
+    @PostMapping("/createReservation")
+    public ResponseEntity<ApiResponse> createSeatReservation(@RequestBody SeatReservation seatReservation) {
+        try {
+            SeatReservation createdReservation = seatReservationService.createSeatReservation(seatReservation);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new ApiResponse(true, "CREATE_SEAT_RESERVATION_SUCCESS", createdReservation));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(false, "CREATE_SEAT_RESERVATION_FAILED", null));
+        }
+    }
     /*
     // 根据ID查找座位预约记录
     @GetMapping("/{id}")

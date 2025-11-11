@@ -16,7 +16,6 @@ public class SecurityConfig {
                         "/api/borrows/*",
                         "/api/borrows/user/*",
                         "/api/borrows/borrowed/*",
-                        "/api/borrows/renew",
                         "/api/books/*",
                         "/api/books/updateBook/*",
                         "/api/books/delete/*",
