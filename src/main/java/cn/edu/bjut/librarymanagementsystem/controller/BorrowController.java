@@ -3,6 +3,7 @@ package cn.edu.bjut.librarymanagementsystem.controller;
 import cn.edu.bjut.librarymanagementsystem.dto.ApiResponse;
 import cn.edu.bjut.librarymanagementsystem.dto.BorrowRequest;
 import cn.edu.bjut.librarymanagementsystem.dto.RenewRequest;
+import cn.edu.bjut.librarymanagementsystem.dto.SetBorrowStatusRequest;
 import cn.edu.bjut.librarymanagementsystem.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,6 +57,17 @@ public class BorrowController {
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse(false, "BORROW_FAILED", null));
+        }
+    }
+
+    @PostMapping("/setStatus")
+    public ResponseEntity<ApiResponse> setBorrowStatus(@RequestBody SetBorrowStatusRequest req) {
+        boolean statusSet = borrowService.setBorrowStatus(req.borrowId(), req.status());
+        if (statusSet) {
+            return ResponseEntity.ok(new ApiResponse(true, "STATUS_UPDATE_SUCCESS", null));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(false, "STATUS_UPDATE_FAILED", null));
         }
     }
 

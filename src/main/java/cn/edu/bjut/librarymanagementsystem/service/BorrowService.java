@@ -32,7 +32,7 @@ public class BorrowService {
         Borrow borrow = new Borrow();
         borrow.setUserId(userId);
         borrow.setBarCode(barCode);
-        String title = bookService.getBookById(bookLocationService.getBookLocationByBarCode(barCode).get().getBookId()).getTitle();
+        String title = bookService.getBookById(bookLocationService.getBookLocationByBarcode(barCode).get().getBookId()).getTitle();
         borrow.setTitle(title);
         Timestamp now = new Timestamp(System.currentTimeMillis());
         borrow.setBorrowTime(now);
@@ -42,7 +42,7 @@ public class BorrowService {
         System.out.println(borrow);
         borrowRepository.save(borrow);
         bookLocationService.updateBookLocationStatus(barCode,"借出");
-        bookService.decreaseAvailableCopies(bookLocationService.getBookLocationByBarCode(barCode).get().getBookId());
+        bookService.ModifyAvailableCopies(bookLocationService.getBookLocationByBarcode(barCode).get().getBookId(),-1);
         return true;
     }
 
@@ -66,6 +66,24 @@ public class BorrowService {
 
     public List<Borrow> getAllBorrows() {
         return  borrowRepository.findAll();
+    }
+
+    public boolean setBorrowStatus(Integer integer, String status) {
+        Optional<Borrow> optionalBorrow = borrowRepository.findByBorrowId(integer);
+        if (optionalBorrow.isPresent()) {
+            Borrow borrow = optionalBorrow.get();
+            borrow.setStatus(Borrow.BorrowStatus.valueOf(status));
+            borrowRepository.save(borrow);
+            if (status.equals(Borrow.BorrowStatus.已归还)) {
+                // 归还图书，更新图书位置状态和可用副本数
+                String barCode = borrow.getBarCode();
+                bookLocationService.updateBookLocationStatus(barCode, "可借");
+                Integer bookId = bookLocationService.getBookLocationByBarcode(barCode).get().getBookId();
+                bookService.ModifyAvailableCopies(bookId,1);
+            }
+            return true;
+        }
+        return false;
     }
     /*
 

@@ -2,6 +2,7 @@ package cn.edu.bjut.librarymanagementsystem.controller;
 
 import cn.edu.bjut.librarymanagementsystem.dto.*;
 import cn.edu.bjut.librarymanagementsystem.entity.*;
+import cn.edu.bjut.librarymanagementsystem.repository.BookLocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,15 +22,15 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    @GetMapping("getAll")
+    @GetMapping("/getAll")
     public ResponseEntity<ApiResponse> getAllBooks(){
         List<Book> books = bookService.getAllBooks();
         return ResponseEntity.ok(new ApiResponse(true, "GET_ALL_SUCCESS", books));
     }
     // 根据书名查找书籍
-    @PostMapping("/searchTitle")
-    public ResponseEntity<ApiResponse> searchBooksByTitle(@RequestBody BookQueryByTitleRequest req) {
-        List<Book> books = bookService.getBooksByTitle(req.title());
+    @GetMapping("/searchTitle/{title}")
+    public ResponseEntity<ApiResponse> searchBooksByTitle(@PathVariable String title) {
+        List<Book> books = bookService.getBooksByTitle(title);
         return ResponseEntity.ok(new ApiResponse(true, "SEARCH_SUCCESS", books));
     }
 

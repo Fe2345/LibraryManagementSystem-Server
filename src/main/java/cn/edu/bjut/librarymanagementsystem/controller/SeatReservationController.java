@@ -2,6 +2,7 @@ package cn.edu.bjut.librarymanagementsystem.controller;
 
 import cn.edu.bjut.librarymanagementsystem.dto.ApiResponse;
 import cn.edu.bjut.librarymanagementsystem.dto.SetSeatReservationStatusRequest;
+import cn.edu.bjut.librarymanagementsystem.dto.createReservationRequest;
 import cn.edu.bjut.librarymanagementsystem.entity.SeatReservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -60,7 +61,7 @@ public class SeatReservationController {
     }
 
     @PostMapping("/createReservation")
-    public ResponseEntity<ApiResponse> createSeatReservation(@RequestBody SeatReservation seatReservation) {
+    public ResponseEntity<ApiResponse> createSeatReservation(@RequestBody createReservationRequest seatReservation) {
         try {
             SeatReservation createdReservation = seatReservationService.createSeatReservation(seatReservation);
             return ResponseEntity.status(HttpStatus.CREATED)
@@ -68,6 +69,17 @@ public class SeatReservationController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse(false, "CREATE_SEAT_RESERVATION_FAILED", null));
+        }
+    }
+
+    @PutMapping("/checkin/{reservationId}")
+    public ResponseEntity<ApiResponse> checkInSeatReservation(@PathVariable Integer reservationId) {
+        try {
+            boolean checkedIn = seatReservationService.checkInSeatReservation(reservationId);
+            return ResponseEntity.ok(new ApiResponse(true, "CHECKIN_SEAT_RESERVATION_SUCCESS", null));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(false, "CHECKIN_SEAT_RESERVATION_FAILED", null));
         }
     }
     /*

@@ -1,6 +1,7 @@
 package cn.edu.bjut.librarymanagementsystem.controller;
 
 import cn.edu.bjut.librarymanagementsystem.dto.ApiResponse;
+import cn.edu.bjut.librarymanagementsystem.dto.BookLocationRequest;
 import cn.edu.bjut.librarymanagementsystem.entity.BookLocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,10 +30,10 @@ public class BookLocationController {
         return new ResponseEntity<>(locations, HttpStatus.OK);
     }
 
-    // 根据ID获取图书位置
-    @GetMapping("/{id}")
-    public ResponseEntity<BookLocation> getBookLocationById(@PathVariable Long id) {
-        Optional<BookLocation> location = bookLocationService.getBookLocationById(id);
+    // 根据条码获取图书位置
+    @GetMapping("/{barcode}")
+    public ResponseEntity<BookLocation> getBookLocationByBarcode(@PathVariable String barcode) {
+        Optional<BookLocation> location = bookLocationService.getBookLocationByBarcode(barcode);
         return location.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
@@ -51,17 +52,28 @@ public class BookLocationController {
         return new ResponseEntity<>(locations, HttpStatus.OK);
     }
 
-    // 保存图书位置
-    @PostMapping
-    public ResponseEntity<BookLocation> saveBookLocation(@RequestBody BookLocation bookLocation) {
-        BookLocation savedLocation = bookLocationService.saveBookLocation(bookLocation);
-        return new ResponseEntity<>(savedLocation, HttpStatus.CREATED);
+    // 新增图书位置（服务端自动生成createdAt/updatedAt）
+    @PostMapping("/createBookLocation")
+    public ResponseEntity<ApiResponse> createBookLocation(@RequestBody BookLocationRequest bookLocation) {
+        BookLocation savedLocation = bookLocationService.createBookLocation(bookLocation);
+        return ResponseEntity.ok(new ApiResponse(true, "BOOK_LOCATION_CREATED", savedLocation));
     }
 
-    // 删除图书位置
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBookLocation(@PathVariable Long id) {
-        bookLocationService.deleteBookLocation(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    // 更新图书位置（不允许修改barcode，服务端自动更新updatedAt）
+    @PutMapping("update/{barcode}")
+    public ResponseEntity<ApiResponse> updateBookLocation(@PathVariable String barcode,
+                                                           @RequestBody BookLocationRequest bookLocation) {
+        Optional<BookLocation> updated = bookLocationService.updateBookLocation(barcode, bookLocation);
+        return updated.map(location ->
+                ResponseEntity.ok(new ApiResponse(true, "BOOK_LOCATION_UPDATED", location)))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse(false, "BOOK_LOCATION_NOT_FOUND", null)));
+    }
+
+    // 删除图书位置（按条码）
+    @DeleteMapping("delete/{barcode}")
+    public ResponseEntity<ApiResponse> deleteBookLocation(@PathVariable String barcode) {
+        bookLocationService.deleteBookLocation(barcode);
+        return ResponseEntity.ok(new ApiResponse(true, "BOOK_LOCATION_DELETED", null));
     }
 }

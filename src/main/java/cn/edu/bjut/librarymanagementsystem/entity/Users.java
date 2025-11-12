@@ -39,8 +39,9 @@ public class Users {
     @Column(name = "created_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdTime;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role_code", nullable = false)
-    private String roleCode = "USER";
+    private Role role;
 
     public void setStudentNo(String studentNo) {
         this.studentNo = studentNo;
@@ -82,8 +83,8 @@ public class Users {
         this.gender = gender;
     }
 
-    public void setRoleCode(String roleCode) {
-        this.roleCode = roleCode;
+    public void setRoleCode(Role role) {
+        this.role = role;
     }
 
     public Integer getUserId() {
@@ -126,8 +127,8 @@ public class Users {
         return createdTime;
     }
 
-    public  String getRoleCode() {
-        return roleCode;
+    public  Role getRole() {
+        return role;
     }
 
     public enum Gender {

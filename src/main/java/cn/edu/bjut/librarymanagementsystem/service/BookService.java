@@ -5,6 +5,7 @@ import cn.edu.bjut.librarymanagementsystem.dto.BookRequest;
 import cn.edu.bjut.librarymanagementsystem.entity.Book;
 import cn.edu.bjut.librarymanagementsystem.entity.BookLocation;
 import cn.edu.bjut.librarymanagementsystem.repository.BookLocationRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.edu.bjut.librarymanagementsystem.repository.BookRepository;
@@ -77,8 +78,10 @@ public class BookService {
     }
 
     // 删除书籍
+    @Transactional
     public void deleteBook(Integer id) {
-        bookRepository.deleteById(id);
+        bookLocationRepository.deleteByBookId(id);
+        bookRepository.deleteByBookId(id);
     }
 
     public List<Book> ComplexSearch(BookQueryRequest req){
@@ -116,12 +119,12 @@ public class BookService {
         }
     }
 
-    public boolean decreaseAvailableCopies(Integer bookId) {
+    public boolean ModifyAvailableCopies(Integer bookId,Integer delta) {
         Optional<Book> optionalBook = bookRepository.findById(bookId);
         if (optionalBook.isPresent()) {
             Book book = optionalBook.get();
             if (book.getAvailableCopies() > 0) {
-                book.setAvailableCopies(book.getAvailableCopies() - 1);
+                book.setAvailableCopies(book.getAvailableCopies() + delta);
                 bookRepository.save(book);
                 return true;
             }

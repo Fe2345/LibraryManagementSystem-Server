@@ -8,6 +8,8 @@
 |-------------------|-------------|-------------------------|
 | true/false，是否请求成功 | string，返回消息 | object，一般为JSON格式，返回数据详情 |
 
+**注意**: 所有时间字段均采用ISO 8601格式的字符串表示，例如："2024-01-01T12:00:00Z"。
+
 ## 用户认证
 分类：`/api/auth`
 #### 登录
@@ -38,12 +40,116 @@
     "email": "string",
     "phone": "string",
     "realName": "string",
+    "gender": "boolean",
+    "studentNo": "int",
+    "department": "int",
+    "createdTime": "time",
+    "role" : "学生/管理员"
+  }
+```
+#### 注册
+- **URL**: `/api/auth/register`
+- **方法**: `POST`
+- **请求体**
+```json
+{
+    "loginName": "string",
+    "password": "string",
+    "email": "string",
+    "phone": "string",
+    "realName": "string",
     "gender": "男/女",
     "studentNo": "int",
     "department": "int",
-    "createdTime": "time"
+    "createdTime": "time",
+    "role" : "学生/管理员"
+}
+```
+- **响应**:
+
+| code,message        | 情况      |
+|---------------------|---------|
+| 200,REGISTER_SUCCESS | 注册成功    |
+| 400,REGISTER_FAILED  | 注册失败    |
+- **数据**:
+
+```json
+{
+    "userId": "int",
+    "loginName": "string",
+    "password": "string",
+    "email": "string",
+    "phone": "string",
+    "realName": "string",
+    "gender": "男/女",
+    "studentNo": "int",
+    "department": "int",
+    "createdTime": "time",
+    "role" : "学生/管理员"
   }
 ```
+#### 获取全部用户信息
+- **URL**: `/api/users/getAll`
+- **方法**: `GET`
+- **响应**:
+
+| code,message              | 情况      |
+|---------------------------|---------|
+| 200,GET_ALL_USERS_SUCCESS | 请求成功    |
+- **数据**:
+```json
+[
+    {
+        "userId": "int",
+        "loginName": "string",
+        "password": "string",
+        "email": "string",
+        "phone": "string",
+        "realName": "string",
+        "gender": "男/女",
+        "studentNo": "int",
+        "department": "int",
+        "createdTime": "time",
+        "role" : "学生/管理员"
+    }
+]
+```
+
+#### 更新用户信息
+- **URL**: `/api/users/update/{userId}`
+- **方法**: `PUT`
+- **请求体**
+```json
+{
+    "loginName": "string",
+    "password": "string",
+    "email": "string",
+    "phone": "string",
+    "realName": "string",
+    "gender": "男/女",
+    "studentNo": "int",
+    "department": "int",
+    "createdTime": "time",
+    "role" : "学生/管理员"
+}
+```
+- **响应**:
+
+| code,message                 | 情况      |
+|------------------------------|---------|
+| 200,USER_UPDATE_SUCCESSFULLY | 更新成功    |
+| 400,USER_UPDATE_FAILED       | 更新失败    |
+
+#### 删除用户
+- **URL**: `/api/auth/delete/{userId}`
+- **方法**: `DELETE`
+- **响应**:
+
+| code,message                 | 情况      |
+|------------------------------|---------|
+| 200,USER_DELETE_SUCCESSFULLY | 删除成功    |
+
+
 ## 座位管理
 
 分类：`/api/seats`
@@ -83,7 +189,7 @@
 返回一个整数，表示当前可用座位数
 
 #### 获取全部预约
-- **URL**: `/api/seats/reservation/getAll`
+- **URL**: `/api/seats/reservations/getAll`
 - **方法**:`GET`
 - **响应**
 
@@ -116,7 +222,7 @@
 
 #### 查看指定预约ID的状态
 
-- **URL**: `/api/seats/reservation/{reservationId}`
+- **URL**: `/api/seats/reservations/{reservationId}`
 - **方法**:`GET`
 - **响应**
 
@@ -146,7 +252,7 @@
 }
 ```
 #### 查找指定ID用户的预约记录
-- **URL**: `/api/seats/reservation/user/{userId}`
+- **URL**: `/api/seats/reservations/user/{userId}`
 - **方法**:`GET`
 - **响应**
 
@@ -176,6 +282,34 @@
     }
 ]
 ```
+#### 添加预约记录
+- **URL**: `/api/seats/reservations/createReservation`
+- **方法**: `POST`
+- **请求体**:
+```json
+{
+  "userId": "int",
+  "seatId": "int",
+  "startTime": "time",
+  "endTime": "time"
+}
+```
+- **响应**:
+
+| code,message                        | 情况      |
+|-------------------------------------|---------|
+| 200,CREATE_SEAT_RESERVATION_SUCCESS | 预约成功    |
+| 400,CREATE_SEAT_RESERVATION_FAILED  | 预约失败    |
+
+#### 签到
+- **URL**: `/api/seats/reservations/checkin/{reservationId}`
+- **方法**: `PUT`
+- **响应**:
+
+| code,message                         | 情况      |
+|--------------------------------------|---------|
+| 200,CHECKIN_SEAT_RESERVATION_SUCCESS | 签到成功    |
+| 400,CHECKIN_SEAT_RESERVATION_FAILED  | 签到失败    |
 
 #### 切换预约状态
 - **URL**: `/api/seats/updateStatus/{seatId}`
@@ -255,14 +389,8 @@
 ]
 ```
 #### 按照书名搜索图书
-- **URL**: `/api/books/searchByTitle/{title}`
-- **方法**: `POST`
-- **请求体**:
-```json
-{
-  "title": "string"
-}
-```
+- **URL**: `/api/books/searchTitle/{title}`
+- **方法**: `GET`
 - **响应**:
 
 | code,message       | 情况      |
@@ -418,7 +546,7 @@
 | 200,UPDATE_BOOK_FAILED  | 更新失败 |
 
 #### 删除图书
-- **URL**: `/api/books/deleteBook/{id}`
+- **URL**: `/api/books/delete/{id}`
 - **方法**: `DELETE`
 - **响应**:
 
@@ -472,6 +600,59 @@
   }
 ]
 ```
+#### 新增图书副本
+- **URL**: `/api/book-locations/createBookLocation`
+- **方法**: `POST`
+- **请求体**:
+```json
+{
+    "barcode": "string",
+    "bookId": "int",
+    "branch": "string",
+    "floor": "string",
+    "shelfNo": "string",
+    "cellNo": "string",
+    "status": "在馆/借出/丢失",
+    "price": "BigDecimal",
+    "damageNote": "string"
+}
+```
+- **响应**:
+
+| code,message              | 情况                |
+|---------------------------|-------------------|
+| 200,BOOK_LOCATION_CREATED | 创建成功     |
+
+#### 更新图书副本信息
+- **URL**: `/api/book-locations/update/{barcode}`
+- **方法**: `PUT`
+- **请求体**:
+```json
+{
+    "branch": "string",
+    "floor": "string",
+    "shelfNo": "string",
+    "cellNo": "string",
+    "status": "在馆/借出/丢失",
+    "price": "BigDecimal",
+    "damageNote": "string"
+}
+```
+- **响应**:
+
+| code,message              | 情况                |
+|---------------------------|-------------------|
+| 200,BOOK_LOCATION_UPDATED | 更新成功     |
+| 404,BOOK_LOCATION_NOT_FOUND | 未找到指定图书副本 |
+
+#### 删除图书副本
+- **URL**: `/api/book-locations/delete/{barcode}`
+- **方法**: `DELETE`
+- **响应**:
+
+| code,message              | 情况                |
+|---------------------------|-------------------|
+| 200,BOOK_LOCATION_DELETED | 删除成功     |
 
 ## 借阅管理
 分类：`/api/borrows`
@@ -496,11 +677,39 @@
     "borrowTime": "time",
     "dueTime": "time",
     "returnTime": "time",
+    "status" : "借出中/已归还/逾期中/挂失中/异常",
     "renewCount": "int",
     "lastRenewTime": "time"
   }
 ]
 ```
+#### 获取指定用户全部借阅记录
+- **URL**: `/api/borrows/user/{userId}`
+- **方法**: `GET`
+- **响应**:
+
+| code,message      | 情况                |
+|-------------------|-------------------|
+| 200,FETCH_SUCCESS | 请求成功     |
+|400,BORROW_NOT_FOUND| 未找到借阅记录 |
+- **数据**
+```json
+[
+  {
+    "borrowId": "int",
+    "userId": "int",
+    "title": "string",
+    "barCode": "string",
+    "borrowTime": "time",
+    "dueTime": "time",
+    "returnTime": "time",
+    "status" : "借出中/已归还/逾期中/挂失中/异常",
+    "renewCount": "int",
+    "lastRenewTime": "time"
+  }
+]
+```
+
 #### 获取指定用户当前在借图书数
 - **URL**: `/api/borrows/borrowed/{userId}`
 - **方法**: `GET`
@@ -527,12 +736,30 @@
 |-------------------------|-------------------|
 | 200,BORROW_SUCCESS | 借阅成功     |
 | 400,BORROW_FAILED  | 借阅失败     |
+
+#### 变更借阅状态
+- **URL**: `/api/borrows/setStatus`
+- **方法**: `POST`
+- **请求体**:
+```json
+{
+  "borrowId": "int",
+  "status": "借出中/已归还/逾期中/挂失中/异常"
+}
+```
+- **响应**:
+
+| code,message            | 情况                |
+|-------------------------|-------------------|
+| 200,STATUS_UPDATE_SUCCESS | 变更成功     |
+| 400,STATUS_UPDATE_FAILED  | 变更失败     |
+
 ## 图书评价管理
 
 分类:`/api/book-reviews`
 
 #### 获取全部评价
-- **URL**: `/api/seat/book-reviews/allComments`
+- **URL**: `/api/book-reviews/allComments`
 - **方法**:`GET`
 - **响应**
 
@@ -559,3 +786,68 @@
     }
 ]
 ```
+#### 创建评价
+- **URL**: `/api/book-reviews/comment`
+- **方法**:`POST`
+- **请求体**:
+```json
+{
+  "userId": "int",
+  "bookId": "int",
+  "title": "string",
+  "rating":"1~5",
+  "status" : "Public/Hidden/Blocked",
+  "comment":"string"
+}
+```
+- **响应**
+
+| code,message       | 情况      |
+|--------------------|---------|
+| 200,BOOK_REVIEW_CREATED  | 创建成功    |
+- **数据**:
+
+```json
+{
+  "reviewId": "int",
+  "userId": "int",
+  "bookId": "int",
+  "rating": "int",
+  "reviewTitle": "string",
+  "reviewContent": "string",
+  "imageAttachments": "json",
+  "status" : "Public/Hidden/Blocked",
+  "createdAt": "time",
+  "updatedAt": "time"
+}
+```
+#### 更新评价状态
+- **URL**: `/api/book-reviews/update/{reviewId}`
+- **方法**:`PUT`
+- **请求体**:
+```json
+{
+  "userId": "int",
+  "bookId": "int",
+  "title": "string",
+  "rating":"1~5",
+  "status" : "Public/Hidden/Blocked",
+  "comment":"string"
+}
+```
+- **响应**
+
+| code,message       | 情况      |
+|--------------------|---------|
+| 200,BOOK_REVIEW_UPDATED  | 更新成功    |
+| 404,BOOK_REVIEW_NOT_FOUND | 未找到指定评价 |
+
+#### 删除评价
+- **URL**: `/api/book-reviews/delete/{reviewId}`
+- **方法**:`DELETE`
+- **响应**
+
+| code,message       | 情况      |
+|--------------------|---------|
+| 200,BOOK_REVIEW_DELETED  | 删除成功    |
+| 404,BOOK_REVIEW_NOT_FOUND | 未找到指定评价 |
