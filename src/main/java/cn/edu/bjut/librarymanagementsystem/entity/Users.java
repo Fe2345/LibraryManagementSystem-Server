@@ -39,6 +39,10 @@ public class Users {
     @Column(name = "created_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdTime;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role_code", nullable = false)
+    private Role role;
+
     public void setStudentNo(String studentNo) {
         this.studentNo = studentNo;
     }
@@ -77,6 +81,10 @@ public class Users {
 
     public void setGender(Gender gender) {
         this.gender = gender;
+    }
+
+    public void setRoleCode(Role role) {
+        this.role = role;
     }
 
     public Integer getUserId() {
@@ -119,7 +127,15 @@ public class Users {
         return createdTime;
     }
 
+    public  Role getRole() {
+        return role;
+    }
+
     public enum Gender {
         男, 女
+    }
+
+    public enum Role {
+        学生, 管理员
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface BookLocationRepository extends JpaRepository<BookLocation, Long> {
+public interface BookLocationRepository extends JpaRepository<BookLocation, String> {
 
     // 根据书籍ID查找该书籍所有位置
     List<BookLocation> findByBookId(int book);
@@ -18,6 +18,8 @@ public interface BookLocationRepository extends JpaRepository<BookLocation, Long
     List<BookLocation> findByStatus(LocationStatus status);
 
     Optional<BookLocation> findByBarcode(String barcode);
+
+    List<BookLocation> deleteByBookId(int bookId);
 
     // 可以按需求添加更多的自定义查询方法
 }

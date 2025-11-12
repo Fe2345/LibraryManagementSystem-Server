@@ -29,4 +29,10 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     Book findByBookId(Integer bookId);
 
     List<Book> findByTitle(String title);
+
+    //删除指定ID的书籍
+    void deleteByBookId(Integer bookId);
+
+    //根据书名是否包含关键字查找书籍
+    List<Book> findBooksByTitleContaining(String keyword);
 }

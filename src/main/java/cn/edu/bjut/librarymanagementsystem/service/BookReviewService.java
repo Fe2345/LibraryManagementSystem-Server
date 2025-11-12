@@ -1,5 +1,6 @@
 package cn.edu.bjut.librarymanagementsystem.service;
 
+import cn.edu.bjut.librarymanagementsystem.dto.CommentRequest;
 import cn.edu.bjut.librarymanagementsystem.dto.CommentResponse;
 import cn.edu.bjut.librarymanagementsystem.entity.BookReview;
 import cn.edu.bjut.librarymanagementsystem.repository.BookRepository;
@@ -8,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.edu.bjut.librarymanagementsystem.repository.BookReviewRepository;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,12 +30,11 @@ public class BookReviewService {
     }
 
     //添加书评
-    public boolean addBookReview(BookReview bookReview) {
+    public BookReview addBookReview(BookReview bookReview) {
         try{
-            bookReviewRepository.save(bookReview);
-            return true;
+            return bookReviewRepository.save(bookReview);
         }catch (Exception e){
-            return false;
+            return null;
         }
     }
 
@@ -51,6 +55,35 @@ public class BookReviewService {
                 bookRepository.findById(review.getBookId()).get().getIsbn(),
                 userRepository.findByUserId(review.getUserId()).get().getLoginName()
         )).toList();
+    }
+
+    public boolean deleteBookReview(Long id) {
+        if(bookReviewRepository.existsById(id)){
+            bookReviewRepository.deleteById(id);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean updateBookReview(Long id, CommentRequest req) {
+        Optional<BookReview> existingReview = bookReviewRepository.findById(id);
+        if(existingReview.isPresent()){
+            BookReview reviewToUpdate = existingReview.get();
+            reviewToUpdate.setBookId(req.bookId());
+            reviewToUpdate.setUserId(req.userId());
+            reviewToUpdate.setReviewTitle(req.title());
+            reviewToUpdate.setRating(req.rating());
+            reviewToUpdate.setReviewContent(req.comment());
+            reviewToUpdate.setImageAttachments(existingReview.get().getImageAttachments());
+            reviewToUpdate.setStatus(req.status());
+            reviewToUpdate.setCreatedAt(existingReview.get().getCreatedAt());
+            reviewToUpdate.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
+            bookReviewRepository.save(reviewToUpdate);
+            return true;
+        }else{
+            return false;
+        }
     }
 /*
     // 获取所有书评

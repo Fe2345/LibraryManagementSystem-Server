@@ -20,4 +20,7 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     Optional<Users> findByLoginName(String loginName);
 
     Optional<Users> findByUserId(Integer Userid);
+
+    //删除用户
+    void deleteByUserId(Integer Userid);
 }

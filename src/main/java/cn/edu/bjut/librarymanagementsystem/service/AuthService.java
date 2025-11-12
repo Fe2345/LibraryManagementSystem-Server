@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import cn.edu.bjut.librarymanagementsystem.utils.*;
 import cn.edu.bjut.librarymanagementsystem.dto.*;
 import cn.edu.bjut.librarymanagementsystem.entity.*;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import cn.edu.bjut.librarymanagementsystem.entity.Users.Gender;
 
@@ -50,8 +53,10 @@ public class AuthService {
         u.setGender(req.gender() ? 男 : 女);
         u.setStudentNo(req.studentNo());
         u.setDepartment(req.department());
-        userRepository.save(u);
-        return new ApiResponse(true, "REGISTER_SUCCESS", null);
+        u.setRoleCode(req.role());
+        u.setCreatedTime(Timestamp.valueOf(LocalDateTime.now()));
+        var saves = userRepository.save(u);
+        return new ApiResponse(true, "REGISTER_SUCCESS", saves);
     }
 
     public Optional<Users> getUserByLoginName(String loginName) {

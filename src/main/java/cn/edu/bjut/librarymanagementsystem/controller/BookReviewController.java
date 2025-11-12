@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import cn.edu.bjut.librarymanagementsystem.service.BookReviewService;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -26,16 +28,35 @@ public class BookReviewController {
     @PostMapping("/comment")
     public ResponseEntity<ApiResponse> createBookReview(@RequestBody CommentRequest req) {
         BookReview bookReview = new BookReview();
-        boolean created = bookReviewService.addBookReview(bookReview);
-        return created ? ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse(true, "BOOK_REVIEW_CREATED", bookReview)) :
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "BOOK_REVIEW_NOT_EXIST", bookReview));
+        bookReview.setBookId(req.bookId());
+        bookReview.setUserId(req.userId());
+        bookReview.setReviewTitle(req.title());
+        bookReview.setRating(req.rating());
+        bookReview.setReviewContent(req.comment());
+        bookReview.setStatus(req.status());
+        bookReview.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+        BookReview created = bookReviewService.addBookReview(bookReview);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(true, "BOOK_REVIEW_CREATED", bookReview));
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ApiResponse> updateBookReview(@PathVariable Long id, @RequestBody CommentRequest req) {
+        boolean updated = bookReviewService.updateBookReview(id, req);
+        return updated ? ResponseEntity.ok(new ApiResponse(true, "BOOK_REVIEW_UPDATED", null)) :
+                ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, "BOOK_REVIEW_NOT_FOUND", null));
     }
 
     @GetMapping("/allComments")
     public ResponseEntity<ApiResponse> getAllBookReviews() {
         List<CommentResponse> reviews = bookReviewService.getAllBookReviews();
         return ResponseEntity.ok(new ApiResponse(true, "ALL_BOOK_REVIEWS_FETCHED", reviews));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse> deleteBookReview(@PathVariable Long id) {
+        boolean deleted = bookReviewService.deleteBookReview(id);
+        return deleted ? ResponseEntity.ok(new ApiResponse(true, "BOOK_REVIEW_DELETED", null)) :
+                ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, "BOOK_REVIEW_NOT_FOUND", null));
     }
 /*
     // 根据ID获取书评

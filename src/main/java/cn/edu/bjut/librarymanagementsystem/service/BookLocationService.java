@@ -1,10 +1,13 @@
 package cn.edu.bjut.librarymanagementsystem.service;
 
+import cn.edu.bjut.librarymanagementsystem.dto.BookLocationRequest;
 import cn.edu.bjut.librarymanagementsystem.entity.BookLocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.edu.bjut.librarymanagementsystem.repository.BookLocationRepository;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,9 +26,9 @@ public class BookLocationService {
         return bookLocationRepository.findAll();
     }
 
-    // 根据ID查找图书位置
-    public Optional<BookLocation> getBookLocationById(Long id) {
-        return bookLocationRepository.findById(id);
+    // 根据barcode查找图书位置
+    public Optional<BookLocation> getBookLocationByBarcode(String barcode) {
+        return bookLocationRepository.findByBarcode(barcode);
     }
 
     // 根据书籍ID查找所有位置
@@ -33,27 +36,50 @@ public class BookLocationService {
         return bookLocationRepository.findByBookId(bookId);
     }
 
-    //根据BarCode查找图书位置
-    public Optional<BookLocation> getBookLocationByBarCode(String barCode) {
-        return bookLocationRepository.findByBarcode(barCode);
-    }
-
     // 根据图书位置状态查找
     public List<BookLocation> getBookLocationsByStatus(BookLocation.LocationStatus status) {
         return bookLocationRepository.findByStatus(status);
     }
 
-    // 保存图书位置
-    public BookLocation saveBookLocation(BookLocation bookLocation) {
-        return bookLocationRepository.save(bookLocation);
+    // 保存图书位置（新增）自动生成createdAt与updatedAt
+    public BookLocation createBookLocation(BookLocationRequest bookLocation) {
+        BookLocation bookLocationEntity = new BookLocation();
+        bookLocationEntity.setBarcode(bookLocation.barcode());
+        bookLocationEntity.setBookId(bookLocation.bookId());
+        bookLocationEntity.setBranch(bookLocation.branch());
+        bookLocationEntity.setFloor(bookLocation.floor());
+        bookLocationEntity.setShelfNo(bookLocation.shelfNo());
+        bookLocationEntity.setCellNo(bookLocation.cellNo());
+        bookLocationEntity.setStatus(bookLocation.status());
+        bookLocationEntity.setPrice(bookLocation.price());
+        bookLocationEntity.setDamageNote(bookLocation.damageNote());
+        Timestamp now = Timestamp.from(Instant.now());
+        bookLocationEntity.setCreatedAt(now);
+        return bookLocationRepository.save(bookLocationEntity);
+    }
+
+    // 更新图书位置信息（不允许修改barcode主键）
+    public Optional<BookLocation> updateBookLocation(String barcode, BookLocationRequest incoming) {
+        return bookLocationRepository.findByBarcode(barcode).map(existing -> {
+            // 可更新字段
+            existing.setBranch(incoming.branch());
+            existing.setFloor(incoming.floor());
+            existing.setShelfNo(incoming.shelfNo());
+            existing.setCellNo(incoming.cellNo());
+            existing.setStatus(incoming.status());
+            existing.setPrice(incoming.price());
+            existing.setDamageNote(incoming.damageNote());
+            existing.setUpdatedAt(Timestamp.from(Instant.now()));
+            return bookLocationRepository.save(existing);
+        });
     }
 
     // 删除图书位置
-    public void deleteBookLocation(Long id) {
-        bookLocationRepository.deleteById(id);
+    public void deleteBookLocation(String barcode) {
+        bookLocationRepository.deleteById(barcode);
     }
 
-    // 更新图书位置状态
+    // 更新图书位置状态（单独的状态更新）
     public boolean updateBookLocationStatus(String barCode, String newStatus) {
         Optional<BookLocation> optional = bookLocationRepository.findByBarcode(barCode);
         if (optional.isPresent()) {
@@ -61,10 +87,10 @@ public class BookLocationService {
             try {
                 BookLocation.LocationStatus status = BookLocation.LocationStatus.valueOf(newStatus);
                 location.setStatus(status);
+                location.setUpdatedAt(Timestamp.from(Instant.now()));
                 bookLocationRepository.save(location);
                 return true;
             } catch (IllegalArgumentException e) {
-                // newStatus不是有效枚举
                 return false;
             }
         }

@@ -1,5 +1,7 @@
 package cn.edu.bjut.librarymanagementsystem.dto;
 
+import cn.edu.bjut.librarymanagementsystem.entity.Users;
+
 public record RegisterRequest(
     String loginName,
     String password,
@@ -8,6 +10,7 @@ public record RegisterRequest(
     String realName,
     Boolean gender,
     String studentNo,
-    String department
+    String department,
+    Users.Role role
 ) {}
 

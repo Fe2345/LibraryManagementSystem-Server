@@ -1,11 +1,14 @@
 package cn.edu.bjut.librarymanagementsystem.service;
 
+import cn.edu.bjut.librarymanagementsystem.dto.createReservationRequest;
 import cn.edu.bjut.librarymanagementsystem.entity.SeatReservation;
 import cn.edu.bjut.librarymanagementsystem.entity.SeatReservation.ReservationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.edu.bjut.librarymanagementsystem.repository.SeatReservationRepository;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +42,29 @@ public class SeatReservationService {
             SeatReservation reservation = optionalReservation.get();
             // 切换状态
             reservation.setStatus(ReservationStatus.valueOf(status));
+            seatReservationRepository.save(reservation);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public SeatReservation createSeatReservation(createReservationRequest seatReservation) {
+        SeatReservation reservation = new SeatReservation();
+        reservation.setUserId(seatReservation.userId());
+        reservation.setSeatId(seatReservation.seatId());
+        reservation.setStartTime(seatReservation.startTime());
+        reservation.setEndTime(seatReservation.endTime());
+        reservation.setStatus(ReservationStatus.待签到); // 默认状态为已预约
+        return seatReservationRepository.save(reservation);
+    }
+
+    public boolean checkInSeatReservation(Integer reservationId) {
+        //将指定ID的预约记录的预约时间设置为Now
+        Optional<SeatReservation> optionalReservation = seatReservationRepository.findByReservationId(reservationId);
+        if (optionalReservation.isPresent()) {
+            SeatReservation reservation = optionalReservation.get();
+            reservation.setCheckinTime(Timestamp.valueOf(LocalDateTime.now()));
             seatReservationRepository.save(reservation);
             return true;
         } else {

@@ -18,9 +18,8 @@ public class SeatReservation {
     @JoinColumn(name = "user_id", nullable = false)
     private Integer userId;
 
-    @ManyToOne
     @JoinColumn(name = "seat_id", nullable = false)
-    private Seat seat;
+    private Integer seatId;
 
     public void setReservationId(Integer reservationId) {
         this.reservationId = reservationId;
@@ -30,8 +29,8 @@ public class SeatReservation {
         this.userId = userId;
     }
 
-    public void setSeat(Seat seat) {
-        this.seat = seat;
+    public void setSeatId(Integer seatId) {
+        this.seatId = seatId;
     }
 
     public void setEndTime(Timestamp endTime) {
@@ -62,8 +61,8 @@ public class SeatReservation {
         return userId;
     }
 
-    public Seat getSeat() {
-        return seat;
+    public Integer getSeatId() {
+        return seatId;
     }
 
     public Timestamp getStartTime() {
