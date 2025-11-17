@@ -48,7 +48,7 @@ public class SeatService {
             Seat seat = seatOptional.get();
             // 设置座位状态为已预约
             if (seat.getStatus().equals(SeatStatus.可用)) seat.setStatus(SeatStatus.维护);
-            if (seat.getStatus().equals(SeatStatus.维护)) seat.setStatus(SeatStatus.可用);
+            else if (seat.getStatus().equals(SeatStatus.维护)) seat.setStatus(SeatStatus.可用);
             seatRepository.save(seat);
             return true;
         } else {

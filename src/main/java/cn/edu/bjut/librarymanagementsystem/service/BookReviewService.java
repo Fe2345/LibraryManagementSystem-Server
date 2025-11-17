@@ -85,6 +85,10 @@ public class BookReviewService {
             return false;
         }
     }
+
+    public List<BookReview> getReviewsByUserId(Integer userId) {
+        return bookReviewRepository.findByUserId(userId);
+    }
 /*
     // 获取所有书评
     public List<BookReview> getAllBookReviews() {

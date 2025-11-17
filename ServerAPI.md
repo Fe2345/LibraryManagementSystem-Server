@@ -754,6 +754,23 @@
 | 200,STATUS_UPDATE_SUCCESS | 变更成功     |
 | 400,STATUS_UPDATE_FAILED  | 变更失败     |
 
+#### 续借
+- **URL**: `/api/borrows/renew`
+- **方法**: `POST`
+- **请求体**:
+```json
+{
+  "borrowId": "int",
+  "days": "int"
+}
+```
+- **响应**:
+
+| code,message            | 情况                |
+|-------------------------|-------------------|
+| 200,RENEW_SUCCESS | 续借成功     |
+| 400,RENEW_FAILED  | 续借失败     |
+
 ## 图书评价管理
 
 分类:`/api/book-reviews`
@@ -786,6 +803,26 @@
     }
 ]
 ```
+#### 获取指定用户的评价
+- **URL**: `/api/book-reviews/user/{userId}`
+- **方法**:`GET`
+- **响应**
+```json
+[
+    {
+      "reviewId": "int",
+      "user": "int",
+      "bookId": "int",
+      "rating": "int",
+      "reviewTitle": "string",
+      "reviewContent": "string",
+      "imageAttachments": "Public/Hidden/Blocked",
+      "createdAt": "time",
+      "updatedAt": "time"
+    }
+]
+```
+
 #### 创建评价
 - **URL**: `/api/book-reviews/comment`
 - **方法**:`POST`
@@ -802,9 +839,9 @@
 ```
 - **响应**
 
-| code,message       | 情况      |
-|--------------------|---------|
-| 200,BOOK_REVIEW_CREATED  | 创建成功    |
+| code,message            | 情况      |
+|-------------------------|---------|
+| 201,BOOK_REVIEW_CREATED | 创建成功    |
 - **数据**:
 
 ```json

@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface BookReviewRepository extends JpaRepository<BookReview, Long> {
+    List<BookReview> findByUserId(Integer userId);
 
     /*
     // 根据书籍ID查找所有评价
