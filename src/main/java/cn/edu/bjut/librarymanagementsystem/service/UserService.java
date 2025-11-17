@@ -3,6 +3,7 @@ package cn.edu.bjut.librarymanagementsystem.service;
 import cn.edu.bjut.librarymanagementsystem.dto.RegisterRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import cn.edu.bjut.librarymanagementsystem.repository.UserRepository;
 import cn.edu.bjut.librarymanagementsystem.entity.*;
@@ -54,9 +55,11 @@ public class UserService {
     public boolean updateUser(Integer id, RegisterRequest req) {
         Optional<Users> optionalUser = userRepository.findByUserId(id);
         if (optionalUser.isPresent()) {
+            //先把明文密码加密
+            String hash = new BCryptPasswordEncoder().encode(req.password());
             Users user = optionalUser.get();
             user.setLoginName(req.loginName());
-            user.setPassword(req.password());
+            user.setPassword(hash);
             user.setEmail(req.email());
             user.setPhone(req.phone());
             user.setRealName(req.realName());

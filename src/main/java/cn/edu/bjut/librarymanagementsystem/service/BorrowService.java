@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import cn.edu.bjut.librarymanagementsystem.repository.BorrowRepository;
 
 import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +32,7 @@ public class BorrowService {
         System.out.println(userId);
         Borrow borrow = new Borrow();
         borrow.setUserId(userId);
+        borrow.setBookId(bookLocationService.getBookLocationByBarcode(barCode).get().getBookId());
         borrow.setBarCode(barCode);
         String title = bookService.getBookById(bookLocationService.getBookLocationByBarcode(barCode).get().getBookId()).getTitle();
         borrow.setTitle(title);
@@ -51,7 +53,8 @@ public class BorrowService {
         if (optionalBorrow.isPresent()) {
             Borrow borrow = optionalBorrow.get();
             // 更新续借信息
-            borrow.setDueTime(new Timestamp(borrow.getDueTime().getTime() + days * 24 * 60 * 60 * 1000)); // 延长14天
+            borrow.setDueTime(Timestamp.from(borrow.getDueTime().toInstant()
+                    .plus(days, ChronoUnit.DAYS))); // 延长14天
             borrow.setRenewCount(borrow.getRenewCount() + 1);
             borrowRepository.save(borrow);
             return true;

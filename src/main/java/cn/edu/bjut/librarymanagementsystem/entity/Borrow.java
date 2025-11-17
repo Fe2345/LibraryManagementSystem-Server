@@ -20,6 +20,9 @@ public class Borrow {
     @Column(name = "title", nullable = false)
     private String title;
 
+    @Column(name="book_id", nullable = false)
+    private Integer bookId;
+
     @Column(name = "barcode", nullable = false)
     private String barCode;
 
@@ -48,6 +51,10 @@ public class Borrow {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public void setBookId(Integer bookId) {
+        this.bookId = bookId;
     }
 
     public void setBarCode(String barCode) {
@@ -88,6 +95,10 @@ public class Borrow {
 
     public Integer getUserId() {
         return userId;
+    }
+
+    public  Integer getBookId() {
+        return bookId;
     }
 
     public String getBarCode() {

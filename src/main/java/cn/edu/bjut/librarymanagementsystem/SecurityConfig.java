@@ -30,6 +30,7 @@ public class SecurityConfig {
                         "/api/book-reviews/*",
                         "/api/book-reviews/update/*",
                         "/api/book-reviews/delete/*",
+                        "/api/book-reviews/user/*",
                         "/api/seats/*",
                         "/api/seats/reservations/*",
                         "/api/seats/reservations/user/*",

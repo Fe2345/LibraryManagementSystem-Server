@@ -15,6 +15,8 @@ import java.util.Optional;
 public class BookLocationService {
 
     private final BookLocationRepository bookLocationRepository;
+    @Autowired
+    private BookService bookService;
 
     @Autowired
     public BookLocationService(BookLocationRepository bookLocationRepository) {
@@ -55,6 +57,7 @@ public class BookLocationService {
         bookLocationEntity.setDamageNote(bookLocation.damageNote());
         Timestamp now = Timestamp.from(Instant.now());
         bookLocationEntity.setCreatedAt(now);
+        bookService.ModifyAvailableCopies(bookLocation.bookId(), 1); // 新增图书位置时，增加可用副本数
         return bookLocationRepository.save(bookLocationEntity);
     }
 

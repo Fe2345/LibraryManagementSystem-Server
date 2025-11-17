@@ -25,6 +25,12 @@ public class BookReviewController {
         this.bookReviewService = bookReviewService;
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<ApiResponse> getReviewsByUserId(@PathVariable Integer userId) {
+        List<BookReview> reviews = bookReviewService.getReviewsByUserId(userId);
+        return ResponseEntity.ok(new ApiResponse(true, "REVIEWS_BY_USER_FETCHED", reviews));
+    }
+
     @PostMapping("/comment")
     public ResponseEntity<ApiResponse> createBookReview(@RequestBody CommentRequest req) {
         BookReview bookReview = new BookReview();
