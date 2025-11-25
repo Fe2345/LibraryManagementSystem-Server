@@ -36,6 +36,7 @@ public class SecurityConfig {
                         "/api/seats/reservations/user/*",
                         "/api/seats/reservations/checkin/*",
                         "/api/seats/setMaintain/*",
+                        "/api/seats/toggleMaintain/*",
                         "/api/seats/updateStatus/*",
                         "/api/book-locations/book/*",
                         "/api/book-reviews/*").permitAll()

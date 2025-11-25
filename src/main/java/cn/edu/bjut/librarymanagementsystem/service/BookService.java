@@ -70,8 +70,8 @@ public class BookService {
         book.setSummary(req.summary());
         book.setPages(req.pages());
         book.setEdition(req.edition());
-        book.setTotalCopies(req.totalCopies());
-        book.setAvailableCopies(req.availableCopies());
+        book.setTotalCopies(0);
+        book.setAvailableCopies(0);
         book.setStorageTime(Timestamp.valueOf(LocalDateTime.now()));
         book.setStatus(Book.BookStatus.上架);
         return book;
@@ -123,11 +123,20 @@ public class BookService {
         Optional<Book> optionalBook = bookRepository.findById(bookId);
         if (optionalBook.isPresent()) {
             Book book = optionalBook.get();
-            if (book.getAvailableCopies() > 0) {
                 book.setAvailableCopies(book.getAvailableCopies() + delta);
                 bookRepository.save(book);
                 return true;
-            }
+        }
+        return false;
+    }
+
+    public boolean ModifyTotalCopies(Integer bookId,Integer delta) {
+        Optional<Book> optionalBook = bookRepository.findById(bookId);
+        if (optionalBook.isPresent()) {
+            Book book = optionalBook.get();
+                book.setTotalCopies(book.getTotalCopies() + delta);
+                bookRepository.save(book);
+                return true;
         }
         return false;
     }

@@ -43,6 +43,15 @@ public class AuthService {
         if (userRepository.findByLoginName(req.loginName()).isPresent()) {
             return new ApiResponse(false, "USERNAME_EXIST", null);
         }
+        else if (userRepository.findByEmail(req.email()).isPresent()) {
+            return new ApiResponse(false, "EMAIL_EXIST", null);
+        }
+        else if (userRepository.findByPhone(req.phone()).isPresent()) {
+            return new ApiResponse(false, "PHONE_EXIST", null);
+        }
+        else if (userRepository.findByStudentNo(req.studentNo()).isPresent()) {
+            return new ApiResponse(false, "STUDENT_NO_EXIST", null);
+        }
         String hash = pwEncoder.encode(req.password());
         Users u = new Users();
         u.setLoginName(req.loginName());
@@ -69,8 +78,8 @@ public class AuthService {
             return new ApiResponse(false, "USER_NOT_EXIST", null);
         }
         var user = userOpt.get();
-        if (!pwEncoder.matches(req.newPwd(), user.getPassword())) {
-            return new ApiResponse(false, "OLD_PWD_INCORRECT", null);
+        if (!user.getEmail().equals(req.email())) {
+            return new ApiResponse(false, "EMAIL_INCORRECT", null);
         }
         String newHash = pwEncoder.encode(req.newPwd());
         user.setPassword(newHash);

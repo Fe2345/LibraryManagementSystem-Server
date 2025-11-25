@@ -21,5 +21,7 @@ public interface BookLocationRepository extends JpaRepository<BookLocation, Stri
 
     List<BookLocation> deleteByBookId(int bookId);
 
+    //Integer AvailableLocationCountByBookIdAndStatus(int bookId, LocationStatus status);
+
     // 可以按需求添加更多的自定义查询方法
 }

@@ -138,6 +138,10 @@
 | code,message                 | 情况      |
 |------------------------------|---------|
 | 200,USER_UPDATE_SUCCESSFULLY | 更新成功    |
+| 400,USERNAME_EXISTS          | 用户名已存在  |
+| 400,EMAIL_EXISTS             | 邮箱已存在   |
+| 400,PHONE_EXISTS             | 电话号码已存在  |
+| 400，STUDENT_NO_EXISTS        | 学号已存在   |
 | 400,USER_UPDATE_FAILED       | 更新失败    |
 
 #### 删除用户
@@ -148,6 +152,25 @@
 | code,message                 | 情况      |
 |------------------------------|---------|
 | 200,USER_DELETE_SUCCESSFULLY | 删除成功    |
+
+#### 修改用户密码
+- **URL**: `/api/auth/modifyPwd`
+- **方法**: `POST`
+- **请求体**
+```json
+{
+    "loginName": "string",
+    "email": "int",
+    "newPwd": "string"
+}
+```
+- **响应**:
+
+| code,message           | 情况    |
+|------------------------|-------|
+| 200,PWD_MODIFY_SUCCESS | 修改成功  |
+| 400,USER_NOT_EXIST     | 用户不存在 |
+| 400,EMAIL_INCORRECT    | 邮箱不正确 |
 
 
 ## 座位管理
@@ -187,6 +210,28 @@
 - **数据**:
 
 返回一个整数，表示当前可用座位数
+
+#### 查看指定ID座位的详细信息
+- **URL**: `/api/seats/{seatId}`
+- **方法**:`GET`
+- **响应**
+
+| code,message       | 情况      |
+|--------------------|---------|
+| 200,GET_SEAT_SUCCESS  | 请求成功    |
+| 404,SEAT_NOT_FOUND | 不存在指定座位 |
+- **数据**:
+
+```json
+{
+  "seatId": "int",
+  "seatNo" : "string",
+  "floor": "string",
+  "func": "自习区/讨论区/电源区",
+  "capacity": "int",
+  "status": "可用/维护/被占用"
+}
+```
 
 #### 获取全部预约
 - **URL**: `/api/seats/reservations/getAll`

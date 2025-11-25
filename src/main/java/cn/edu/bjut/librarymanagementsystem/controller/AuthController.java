@@ -1,5 +1,6 @@
 package cn.edu.bjut.librarymanagementsystem.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import cn.edu.bjut.librarymanagementsystem.service.*;
@@ -34,7 +35,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse> register(@RequestBody RegisterRequest req) {
         ApiResponse result = authService.register(req);
         if (!result.success()) {
-            return ResponseEntity.status(409).body(result); // 409: 冲突（用户名已存在）
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(result); // 409: 冲突（用户名已存在）
         }
         return ResponseEntity.ok(result);
     }

@@ -57,7 +57,8 @@ public class BookLocationService {
         bookLocationEntity.setDamageNote(bookLocation.damageNote());
         Timestamp now = Timestamp.from(Instant.now());
         bookLocationEntity.setCreatedAt(now);
-        bookService.ModifyAvailableCopies(bookLocation.bookId(), 1); // 新增图书位置时，增加可用副本数
+        bookService.ModifyTotalCopies(bookLocation.bookId(), 1); // 新增图书位置时，增加可用副本数
+        bookService.ModifyAvailableCopies(bookLocation.bookId(), 1); // 新增图书位置时，增加可借副本数
         return bookLocationRepository.save(bookLocationEntity);
     }
 
@@ -80,6 +81,11 @@ public class BookLocationService {
     // 删除图书位置
     public void deleteBookLocation(String barcode) {
         bookLocationRepository.deleteById(barcode);
+        var bookLocation = bookLocationRepository.findByBarcode(barcode).get();
+        bookService.ModifyTotalCopies(bookLocation.getBookId(), -1); // 删除图书位置时，减少可用副本数
+        if (bookLocation.getStatus() == BookLocation.LocationStatus.在馆) {
+            bookService.ModifyAvailableCopies(bookLocation.getBookId(), -1); // 如果删除的图书位置是可借状态，减少可用副本数
+        }
     }
 
     // 更新图书位置状态（单独的状态更新）
@@ -91,6 +97,11 @@ public class BookLocationService {
                 BookLocation.LocationStatus status = BookLocation.LocationStatus.valueOf(newStatus);
                 location.setStatus(status);
                 location.setUpdatedAt(Timestamp.from(Instant.now()));
+                if (status == BookLocation.LocationStatus.在馆) {
+                    bookService.ModifyAvailableCopies(location.getBookId(), 1); // 状态改为在馆，增加可借副本数
+                } else {
+                    bookService.ModifyAvailableCopies(location.getBookId(), -1); // 状态改为非在馆，减少可借副本数
+                }
                 bookLocationRepository.save(location);
                 return true;
             } catch (IllegalArgumentException e) {

@@ -59,6 +59,17 @@ public class SeatController {
                     .body(new ApiResponse(false, "SEAT_NOT_FOUND", null));
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse> getSeatById(@PathVariable Integer id) {
+        Optional<Seat> seat = seatService.getSeatById(id);
+        if (seat.isPresent()) {
+            return ResponseEntity.ok(new ApiResponse(true, "GET_SEAT_SUCCESS", seat.get()));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(false, "SEAT_NOT_FOUND", null));
+        }
+    }
     /*
     // 根据ID获取座位
     @GetMapping("/{id}")

@@ -42,6 +42,10 @@ public class SeatService {
         }
     }
 
+    public Optional<Seat> getSeatBySeatId(Integer seatId) {
+        return seatRepository.findBySeatId(seatId);
+    }
+
     public boolean setSeatReserved(Integer seatId) {
         Optional<Seat> seatOptional = seatRepository.findBySeatId(seatId);
         if (seatOptional.isPresent()) {
@@ -59,6 +63,10 @@ public class SeatService {
     public int getAvailableSeatCount() {
         // 计算状态为“可用”的座位数量
         return seatRepository.countByStatus(SeatStatus.可用);
+    }
+
+    public Optional<Seat> getSeatById(Integer id) {
+        return seatRepository.findBySeatId(id);
     }
     /*
 
