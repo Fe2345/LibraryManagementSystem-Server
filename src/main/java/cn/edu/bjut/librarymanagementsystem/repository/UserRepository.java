@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<Users, Long> {
 
     // 根据邮箱查找用户
-    Users findByEmail(String email);
+    Optional<Users> findByEmail(String email);
 
     // 根据邮箱和登录名查找用户
     Users findByEmailAndLoginName(String email, String loginName);
@@ -23,4 +23,8 @@ public interface UserRepository extends JpaRepository<Users, Long> {
 
     //删除用户
     void deleteByUserId(Integer Userid);
+
+    Optional<Object> findByPhone(String phone);
+
+    Optional<Object> findByStudentNo(String s);
 }

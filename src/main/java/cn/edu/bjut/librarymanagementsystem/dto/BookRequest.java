@@ -12,7 +12,5 @@ public record BookRequest(String title,
                           String keywords,
                           String summary,
                           int pages,
-                          String edition,
-                          int totalCopies,
-                          int availableCopies) {
+                          String edition) {
 }

@@ -1,5 +1,6 @@
 package cn.edu.bjut.librarymanagementsystem.service;
 
+import cn.edu.bjut.librarymanagementsystem.dto.ApiResponse;
 import cn.edu.bjut.librarymanagementsystem.dto.RegisterRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import cn.edu.bjut.librarymanagementsystem.repository.UserRepository;
 import cn.edu.bjut.librarymanagementsystem.entity.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -37,7 +39,7 @@ public class UserService {
     }
 
     // 根据邮箱查找用户
-    public Users getUserByEmail(String email) {
+    public Optional<Users> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
@@ -52,8 +54,21 @@ public class UserService {
         userRepository.deleteByUserId(id);
     }
 
-    public boolean updateUser(Integer id, RegisterRequest req) {
+    public ApiResponse updateUser(Integer id, RegisterRequest req) {
         Optional<Users> optionalUser = userRepository.findByUserId(id);
+        //检查键冲突
+        if (!Objects.equals(optionalUser.get().getLoginName(), req.loginName()) && userRepository.findByLoginName(req.loginName()).isPresent()) {
+            return new ApiResponse(false, "USERNAME_EXIST", null);
+        }
+        else if (!Objects.equals(optionalUser.get().getEmail(),req.email()) && userRepository.findByEmail(req.email()).isPresent()) {
+            return new ApiResponse(false, "EMAIL_EXIST", null);
+        }
+        else if (!Objects.equals(optionalUser.get().getPhone(),req.phone()) && userRepository.findByPhone(req.phone()).isPresent()) {
+            return new ApiResponse(false, "PHONE_EXIST", null);
+        }
+        else if (!Objects.equals(optionalUser.get().getStudentNo(),req.studentNo()) && userRepository.findByStudentNo(req.studentNo()).isPresent()) {
+            return new ApiResponse(false, "STUDENT_NO_EXIST", null);
+        }
         if (optionalUser.isPresent()) {
             //先把明文密码加密
             String hash = new BCryptPasswordEncoder().encode(req.password());
@@ -67,8 +82,12 @@ public class UserService {
             user.setStudentNo(req.studentNo());
             user.setDepartment(req.department());
             userRepository.save(user);
-            return  true;
+            return new ApiResponse(true, "USER_UPDATED_SUCCESSFULLY", null);
         }
-        return false;
+        return new ApiResponse(false, "USER_UPDATE_FAILED", null);
+    }
+
+    public ApiResponse modifyPassword(RegisterRequest req) {
+        return null;
     }
 }

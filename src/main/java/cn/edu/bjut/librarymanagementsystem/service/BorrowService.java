@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import cn.edu.bjut.librarymanagementsystem.repository.BorrowRepository;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +39,8 @@ public class BorrowService {
         borrow.setTitle(title);
         Timestamp now = new Timestamp(System.currentTimeMillis());
         borrow.setBorrowTime(now);
-        borrow.setDueTime(new Timestamp(now.getTime() + days * 24 * 60 * 60 * 1000)); // 设置到期时间为借阅时间加上指定天数
+        borrow.setDueTime(Timestamp.from(Timestamp.valueOf(LocalDateTime.now()).toInstant()
+                .plus(days, ChronoUnit.DAYS))); // 设置到期时间为借阅时间加上指定天数
         borrow.setStatus(Borrow.BorrowStatus.借出中);
         borrow.setRenewCount(0);
         System.out.println(borrow);
